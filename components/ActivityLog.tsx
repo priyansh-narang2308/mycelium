@@ -27,14 +27,9 @@ export function ActivityLog() {
     setInput("");
 
     try {
-      const apiKeyOverride = localStorage.getItem("GEMINI_API_KEY");
       const headers: Record<string, string> = {
         "Content-Type": "application/json",
       };
-      if (apiKeyOverride && apiKeyOverride.trim() !== "") {
-        headers["x-api-key"] = apiKeyOverride;
-      }
-
       // 1. Parse Input
       const parseRes = await fetch("/api/parse", {
         method: "POST",

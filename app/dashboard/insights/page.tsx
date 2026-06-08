@@ -1,4 +1,5 @@
 "use client";
+import { PieChart } from "lucide-react";
 import { useStore } from "../../../lib/store";
 import { motion } from "framer-motion";
 
@@ -26,9 +27,13 @@ export default function InsightsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-1 space-y-8">
           <div className="bg-canvas border border-hairline rounded-[24px] p-8 shadow-sm">
-            <h3 className="text-[18px] font-semibold mb-6 flex items-center gap-2">
+            <h2 className="text-[18px] font-semibold mb-6 flex items-center gap-2">
+              <PieChart
+                className="w-5 h-5 text-brand-pink"
+                aria-hidden="true"
+              />
               Budget Analysis
-            </h3>
+            </h2>
             <div className="relative pt-4">
               <div className="flex justify-between text-[14px] font-bold text-ink mb-2">
                 <span>{dailyFootprint.toFixed(1)} kg used</span>
@@ -37,8 +42,9 @@ export default function InsightsPage() {
               <div className="w-full h-4 bg-surface-strong rounded-full overflow-hidden">
                 <div
                   className={`h-full rounded-full transition-all duration-1000 ${budgetUsed > 90 ? "bg-brand-pink" : "bg-brand-teal"}`}
-                  style={{ width: `${budgetUsed}%` }}
+                  style={{ width: `${Math.min(budgetUsed, 100)}%` }}
                   role="meter"
+                  aria-label="Budget usage percentage"
                   aria-valuenow={budgetUsed}
                   aria-valuemin={0}
                   aria-valuemax={100}

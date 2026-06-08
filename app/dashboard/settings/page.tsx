@@ -1,5 +1,5 @@
 "use client";
-import { Settings2, Key, Database, Globe } from "lucide-react";
+import { Settings2, Database, Globe } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useStore } from "../../../lib/store";
@@ -9,7 +9,6 @@ import type { JSX } from "react";
 export default function SettingsPage(): JSX.Element {
   const setDailyBudget = useStore((s) => s.setDailyBudget);
   const setRegion = useStore((s) => s.setRegion);
-  const [apiKey, setApiKey] = useState("");
   const [budget, setBudget] = useState("10");
   const [region, setRegionLocal] = useState(
     typeof window !== "undefined"
@@ -19,9 +18,6 @@ export default function SettingsPage(): JSX.Element {
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
-    if (apiKey) {
-      localStorage.setItem("GEMINI_API_KEY", apiKey);
-    }
     const budgetNum = parseFloat(budget);
     if (!isNaN(budgetNum) && budgetNum > 0) {
       localStorage.setItem("CARBON_BUDGET", budget);
@@ -52,13 +48,14 @@ export default function SettingsPage(): JSX.Element {
           </h2>
           <div className="space-y-6">
             <div>
-              <label className="block text-[15px] font-semibold text-ink mb-2">
+              <label htmlFor="budget" className="block text-[15px] font-semibold text-ink mb-2">
                 Daily Carbon Budget (kg CO₂e)
               </label>
               <p className="text-[14px] text-muted font-medium mb-3">
                 Set your target maximum emissions for a single day.
               </p>
               <input
+                id="budget"
                 type="number"
                 value={budget}
                 onChange={(e) => setBudget(e.target.value)}
@@ -67,8 +64,11 @@ export default function SettingsPage(): JSX.Element {
             </div>
 
             <div>
-              <label className="block text-[15px] font-semibold text-ink mb-2">
-                <Globe className="w-4 h-4 inline mr-1.5 -mt-0.5" aria-hidden="true" />
+              <label htmlFor="region" className="block text-[15px] font-semibold text-ink mb-2">
+                <Globe
+                  className="w-4 h-4 inline mr-1.5 -mt-0.5"
+                  aria-hidden="true"
+                />
                 Region / Grid Context
               </label>
               <p className="text-[14px] text-muted font-medium mb-3">
@@ -76,6 +76,7 @@ export default function SettingsPage(): JSX.Element {
                 Select your region for personalized calculations.
               </p>
               <select
+                id="region"
                 value={region}
                 onChange={(e) => setRegionLocal(e.target.value)}
                 className="w-full max-w-md bg-surface-soft border border-hairline rounded-xl px-4 py-3 text-ink font-medium focus:outline-none focus:border-brand-teal transition-colors"
@@ -86,32 +87,6 @@ export default function SettingsPage(): JSX.Element {
                   </option>
                 ))}
               </select>
-            </div>
-          </div>
-        </section>
-
-        <section className="bg-canvas border border-hairline rounded-[24px] p-8 shadow-sm">
-          <h2 className="text-[20px] font-semibold text-ink mb-6 flex items-center gap-2">
-            <Key className="w-5 h-5 text-brand-pink" aria-hidden="true" />
-            AI Configuration (Hackathon Override)
-          </h2>
-          <div className="space-y-6">
-            <div>
-              <label className="block text-[15px] font-semibold text-ink mb-2">
-                Gemini API Key
-              </label>
-              <p className="text-[14px] text-muted font-medium mb-3">
-                If you are a judge reviewing this project locally, you can plug
-                in your own Gemini API key here to test the AI features
-                dynamically.
-              </p>
-              <input
-                type="password"
-                value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
-                placeholder="AIzaSy..."
-                className="w-full bg-surface-soft border border-hairline rounded-xl px-4 py-3 text-ink font-medium focus:outline-none focus:border-brand-pink transition-colors font-mono"
-              />
             </div>
           </div>
         </section>

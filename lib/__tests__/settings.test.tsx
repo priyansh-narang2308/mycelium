@@ -31,8 +31,12 @@ let localStorageStore: Record<string, string> = {};
 beforeEach(() => {
   jest.clearAllMocks();
   localStorageStore = {};
-  jest.spyOn(Storage.prototype, "getItem").mockImplementation((key) => localStorageStore[key] ?? null);
-  jest.spyOn(Storage.prototype, "setItem").mockImplementation((key, value) => { localStorageStore[key] = value; });
+  jest
+    .spyOn(Storage.prototype, "getItem")
+    .mockImplementation((key) => localStorageStore[key] ?? null);
+  jest.spyOn(Storage.prototype, "setItem").mockImplementation((key, value) => {
+    localStorageStore[key] = value;
+  });
 });
 
 describe("SettingsPage", () => {
@@ -48,11 +52,6 @@ describe("SettingsPage", () => {
     expect(input).toHaveAttribute("type", "number");
   });
 
-  it("renders API key input", () => {
-    render(<SettingsPage />);
-    expect(screen.getByPlaceholderText("AIzaSy...")).toBeInTheDocument();
-  });
-
   it("renders save button", () => {
     render(<SettingsPage />);
     expect(screen.getByText("Save Settings")).toBeInTheDocument();
@@ -64,14 +63,6 @@ describe("SettingsPage", () => {
     fireEvent.change(budgetInput, { target: { value: "15" } });
     fireEvent.click(screen.getByText("Save Settings"));
     expect(localStorageStore["CARBON_BUDGET"]).toBe("15");
-  });
-
-  it("saves API key to localStorage on submit", () => {
-    render(<SettingsPage />);
-    const keyInput = screen.getByPlaceholderText("AIzaSy...");
-    fireEvent.change(keyInput, { target: { value: "my-api-key" } });
-    fireEvent.click(screen.getByText("Save Settings"));
-    expect(localStorageStore["GEMINI_API_KEY"]).toBe("my-api-key");
   });
 
   it("calls setDailyBudget on submit", () => {

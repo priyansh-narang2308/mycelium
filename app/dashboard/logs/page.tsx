@@ -85,9 +85,9 @@ export default function LogsPage() {
       ) : (
         <div className="py-24 text-center bg-canvas border border-dashed border-hairline rounded-[24px]">
           <FileText className="w-16 h-16 text-muted mx-auto mb-4 opacity-50" aria-hidden="true" />
-          <h3 className="text-[20px] font-semibold text-ink mb-2">
+          <h2 className="text-[20px] font-semibold text-ink mb-2">
             No logs found
-          </h3>
+          </h2>
           <p className="text-muted font-medium text-[16px]">
             Head over to the Overview page to start logging activities.
           </p>

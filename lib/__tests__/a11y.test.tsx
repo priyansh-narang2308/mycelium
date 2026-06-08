@@ -2,6 +2,10 @@ import { render, act } from "@testing-library/react";
 import { axe } from "jest-axe";
 
 import Home from "../../app/page";
+import DashboardPage from "../../app/dashboard/page";
+import SettingsPage from "../../app/dashboard/settings/page";
+import LogsPage from "../../app/dashboard/logs/page";
+import InsightsPage from "../../app/dashboard/insights/page";
 
 jest.mock("../../lib/store", () => ({
   useStore: () => ({
@@ -43,6 +47,30 @@ jest.mock("next/link", () => {
 
 it("landing page has no accessibility violations", async () => {
   const { container } = render(<Home />);
+  const results = await act(async () => axe(container));
+  expect(results).toHaveNoViolations();
+});
+
+it("dashboard page has no accessibility violations", async () => {
+  const { container } = render(<DashboardPage />);
+  const results = await act(async () => axe(container));
+  expect(results).toHaveNoViolations();
+});
+
+it("settings page has no accessibility violations", async () => {
+  const { container } = render(<SettingsPage />);
+  const results = await act(async () => axe(container));
+  expect(results).toHaveNoViolations();
+});
+
+it("logs page has no accessibility violations", async () => {
+  const { container } = render(<LogsPage />);
+  const results = await act(async () => axe(container));
+  expect(results).toHaveNoViolations();
+});
+
+it("insights page has no accessibility violations", async () => {
+  const { container } = render(<InsightsPage />);
   const results = await act(async () => axe(container));
   expect(results).toHaveNoViolations();
 });
