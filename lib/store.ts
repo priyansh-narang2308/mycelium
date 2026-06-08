@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { Activity, Recommendation } from "./types";
+import { toast } from "sonner";
 
 interface AppState {
   activities: Activity[];
@@ -46,8 +47,10 @@ export const useStore = create<AppState>((set) => ({
         dailyFootprint: daily,
         budgetUsed: Math.min((daily / 10) * 100, 100),
       });
+      toast.success("Demo data loaded! Check out your insights.");
     } catch (e) {
       console.error("Failed to load sample data", e);
+      toast.error("Failed to load demo data.");
     }
   },
   clearActivities: () =>

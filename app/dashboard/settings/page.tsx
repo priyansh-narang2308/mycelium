@@ -1,6 +1,7 @@
 "use client";
 import { Settings2, Key, Database } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export default function SettingsPage() {
   const [apiKey, setApiKey] = useState("");
@@ -12,7 +13,7 @@ export default function SettingsPage() {
       localStorage.setItem("GEMINI_API_KEY", apiKey);
     }
     localStorage.setItem("CARBON_BUDGET", budget);
-    alert("Settings saved successfully!");
+    toast.success("Settings saved successfully!");
   };
 
   return (

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useStore } from "../lib/store";
 import { motion } from "framer-motion";
 import { Terminal, Send } from "lucide-react";
+import { toast } from "sonner";
 import { calculateActivityEmissions } from "../lib/agents/calculator";
 
 export function ActivityLog() {
@@ -50,7 +51,7 @@ export function ActivityLog() {
       const updatedHistory = [...activities, newActivity];
       const budget = parseFloat(localStorage.getItem("CARBON_BUDGET") || "10");
 
-      Promise.all([
+      await Promise.all([
         fetch("/api/recommend", {
           method: "POST",
           headers,
@@ -66,13 +67,14 @@ export function ActivityLog() {
         }).then(res => res.json()).then(data => {
           if (data.insight) setInsight(data.insight);
         }).catch(console.error)
-      ]).finally(() => {
-        setIsProcessing(false);
-      });
+      ]);
 
+      toast.success("Activity logged and analyzed!");
     } catch (err) {
       console.error(err);
       setInput(rawInput);
+      toast.error("Failed to process your activity. Please try again.");
+    } finally {
       setIsProcessing(false);
     }
   };

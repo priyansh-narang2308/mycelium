@@ -14,10 +14,15 @@ export async function generateInsight(
   const percentage = Math.round((todayEmissions / budget) * 100);
 
   const prompt = `
-You are a Carbon Insights Agent.
-Generate a single, encouraging "aha" moment sentence for the user.
-They have used ${percentage}% of their daily carbon budget today (${todayEmissions.toFixed(1)} kg CO2e).
-Keep it under 15 words, non-judgmental, and specific. Do NOT use markdown.
+You are an encouraging, data-driven Climate Coach.
+The user has consumed ${percentage}% of their ${budget}kg daily carbon budget (${todayEmissions.toFixed(1)} kg CO2e used).
+
+Generate a single, powerful "aha" moment sentence.
+Rules:
+1. Keep it under 15 words.
+2. If they are over budget, be encouraging and future-focused, not shameful.
+3. If they are under budget, praise their specific efficiency.
+4. Do NOT use markdown, emojis, or hashtags.
   `;
 
   try {
