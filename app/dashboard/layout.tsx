@@ -12,7 +12,6 @@ export default function DashboardLayout({
 
   return (
     <div className="flex min-h-screen bg-canvas text-body font-sans selection:bg-brand-pink selection:text-white relative">
-      {/* Mobile Overlay */}
       {isMobileOpen && (
         <div 
           className="fixed inset-0 bg-black/20 z-40 md:hidden"
@@ -20,7 +19,6 @@ export default function DashboardLayout({
         />
       )}
 
-      {/* Sidebar */}
       <aside className={`fixed md:static inset-y-0 left-0 z-50 w-64 bg-surface-soft border-r border-hairline flex flex-col transform transition-transform duration-300 ease-in-out ${isMobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}>
         <div className="p-6 border-b border-hairline flex items-center justify-between">
           <Link
@@ -74,9 +72,7 @@ export default function DashboardLayout({
         </div>
       </aside>
 
-      {/* Main Content Area */}
       <main className="flex-1 flex flex-col h-screen overflow-hidden">
-        {/* Mobile Header */}
         <header className="md:hidden p-4 border-b border-hairline bg-surface-soft flex items-center justify-between">
           <Link
             href="/"
@@ -92,7 +88,6 @@ export default function DashboardLayout({
           </button>
         </header>
 
-        {/* Dashboard Content */}
         <div className="flex-1 overflow-y-auto">{children}</div>
       </main>
     </div>

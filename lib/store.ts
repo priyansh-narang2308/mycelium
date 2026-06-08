@@ -28,7 +28,7 @@ export const useStore = create<AppState>((set) => ({
     return { 
       activities: newActivities,
       dailyFootprint: daily,
-      budgetUsed: Math.min((daily / 10) * 100, 100) // Assuming 10kg budget
+      budgetUsed: Math.min((daily / 10) * 100, 100)
     };
   }),
   setRecommendations: (recs) => set({ recommendations: recs }),

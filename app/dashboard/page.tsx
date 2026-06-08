@@ -33,7 +33,6 @@ export default function Dashboard() {
           animate={{ opacity: 1, y: 0 }}
           className="grid grid-cols-1 md:grid-cols-3 gap-8"
         >
-          {/* Meter Card (Teal) */}
           <div className="col-span-1 bg-brand-teal text-white rounded-[24px] p-8">
             <h3 className="text-[18px] font-semibold mb-4 flex items-center gap-2">
               <Leaf className="w-6 h-6 text-brand-mint" />
@@ -50,7 +49,6 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Recommendations (Peach) */}
           <div className="col-span-2 bg-brand-peach text-ink rounded-[24px] p-8">
              <h3 className="text-[20px] font-semibold mb-6 flex items-center gap-2 tracking-tight">
               <Zap className="w-6 h-6" />
@@ -82,7 +80,6 @@ export default function Dashboard() {
             </div>
           </div>
           
-          {/* Activity Stream (Cream Card) */}
           <div className="col-span-3 bg-surface-card rounded-[24px] p-8 mt-4 border border-hairline shadow-sm">
              <h3 className="text-[20px] font-semibold text-ink mb-6 flex items-center gap-2 tracking-tight">
               <Map className="w-6 h-6 text-brand-pink" />
