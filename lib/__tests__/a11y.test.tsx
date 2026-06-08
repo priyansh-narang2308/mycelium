@@ -7,6 +7,8 @@ import SettingsPage from "../../app/dashboard/settings/page";
 import LogsPage from "../../app/dashboard/logs/page";
 import InsightsPage from "../../app/dashboard/insights/page";
 
+
+
 jest.mock("../../lib/store", () => ({
   useStore: () => ({
     activities: [],
