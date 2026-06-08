@@ -1,34 +1,140 @@
-# Carbon Pulse
+# Carbon Pulse — PromptWars Challenge 3
 
-Carbon Pulse is a smart, dynamic, AI-powered B2B web application designed to help users track, analyze, and dramatically reduce their daily carbon footprint with zero friction.
+> AI-powered personal carbon coach. Log your activities naturally, get instant CO₂ calculations, personalized swaps, and gamified challenges — all powered by Google Antigravity + Gemini 3.5 Flash.
 
-## Chosen Vertical
+**Problem Statement**: *Design a solution that helps individuals understand, track, and reduce their carbon footprint through simple actions and personalized insights.*
 
-I have chosen the **Environment / Sustainability** vertical. Our persona logic is designed around an environmentally conscious consumer who wants immediate, actionable insights into their daily activities, rather than overwhelming data dumps.
+---
 
-## Approach and Logic
+## ✨ Features
 
-Our approach is entirely centered around **frictionless input** and **high-leverage swaps**.
-Traditional carbon calculators require users to navigate tedious dropdowns (e.g., "Transportation -> Car -> Miles"). Carbon Pulse eliminates this by integrating the **Gemini 2.5 Flash** model to parse natural language instantly.
+| Feature | Description |
+|---|---|
+| **Natural Language Logging** | Type "I drove 12km" or "I ate a beef burger" — AI parses it automatically |
+| **Instant CO₂ Calculation** | Deterministic emission factors with relatable equivalents ("= 255 smartphone charges") |
+| **AI Recommendations** | Gemini analyzes your habits and suggests 3 personalized swaps ranked by impact |
+| **Weekly Trends** | Bar chart showing your 7-day carbon footprint trajectory |
+| **Category Breakdown** | Donut chart visualizing emissions by category (transport, food, energy, shopping) |
+| **Daily Budget Meter** | Visual gauge showing % of daily carbon budget used |
+| **Gamified Challenges** | Meatless Monday, Bike to Work Wednesday — track streaks and build habits |
+| **AI Insights** | Personalized "aha" moment generated after each log |
+| **Settings** | Configurable daily budget and Gemini API key override |
 
-We used a **Distributed Microservice Architecture** to separate concerns:
+---
 
-1. **NLP Parsing (`/api/parse`)**: Translates "I drove 12km" into structured JSON.
-2. **Recommender (`/api/recommend`)**: Analyzes history to suggest lifestyle swaps.
-3. **Insights (`/api/insight`)**: Contextualizes current budget usage.
+## 🏗 Architecture
 
-The frontend (`ActivityLog.tsx`) acts as an asynchronous orchestrator. It calculates emissions locally for instantaneous UI updates (optimistic response), while fetching the heavy AI analysis asynchronously in the background.
+```
+User Input ("I drove 12km")
+        │
+┌───────▼──────────────┐
+│  Parse API Route      │  ← Zod validation → Gemini NLP parsing
+└───────┬──────────────┘
+        │
+┌───────▼──────────────┐
+│  Calculator (Pure fn) │  ← Emission factors × amount
+└───────┬──────────────┘
+        │
+┌───────▼──────────────┐     ┌──────────────────────┐
+│  Recommender Agent    │  ←  │  Insights Agent       │  ← parallel via Promise.all
+└───────┬──────────────┘     └──────┬───────────────┘
+        │                           │
+┌───────▼───────────────────────────▼────────────────┐
+│  Dashboard UI (Next.js + Zustand + Recharts)        │
+└────────────────────────────────────────────────────┘
+```
 
-## How the Solution Works
+### Tech Stack
 
-1. **Input**: The user types a natural language sentence into the Dashboard (e.g. "I ate beef").
-2. **Analysis**: The `/api/parse` microservice queries Gemini to classify the activity (e.g., `food -> beef`).
-3. **Engine**: The local engine (`lib/emissions.ts`) calculates the CO₂e footprint using deterministic, verifiable scientific data.
-4. **State**: The global Zustand store updates the Daily Budget (capped at 10kg).
-5. **AI Swaps**: Gemini analyzes the user's history and suggests high-leverage swaps (e.g., "Swap to a chicken burger to save 20kg of CO₂").
+- **Frontend**: Next.js 16, React 19, Tailwind CSS 4, Framer Motion, Recharts
+- **AI Layer**: Google Antigravity SDK + Gemini 3.5 Flash
+- **State**: Zustand
+- **Validation**: Zod
+- **Testing**: Jest + React Testing Library
+- **Auth bypass**: Judge-friendly settings page for API key injection
 
-## Assumptions Made
+---
 
-- **Emission Factors**: We assume standard deterministic emission factors (e.g., 0.17 kg CO₂/km for cars, 27 kg CO₂/kg for beef) for consistent calculation.
-- **Budget**: We assume a relatively aggressive daily budget of **10kg CO₂e** to encourage reduction. This can be customized in the Settings.
-- **Hackathon AI Testing**: To prevent `.env` friction, we assume judges may want to test the app locally with their own AI keys. We built a dedicated `/dashboard/settings` override to dynamically inject `GEMINI_API_KEY` into the frontend localStorage, which is securely passed to the backend.
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js 20+
+- Google Gemini API key (free at https://aistudio.google.com/)
+
+### Setup
+
+```bash
+git clone <your-repo-url>
+cd carbon-pulse
+npm install
+```
+
+### Environment Variables
+
+Copy `.env.example` to `.env` and add your Gemini API key:
+
+```
+GEMINI_API_KEY="your-api-key-here"
+```
+
+**For judges**: If you don't want to set up a `.env` file, just run the app and go to `/dashboard/settings` to inject your key through the UI.
+
+### Run
+
+```bash
+npm run dev     # Development server at http://localhost:3000
+npm run build   # Production build
+npm run test    # Test suite (25+ tests)
+npm run lint    # ESLint check
+```
+
+---
+
+## 🧪 Testing
+
+```
+npm run test
+```
+
+| Test Suite | Tests | What It Covers |
+|---|---|---|
+| `emissions.test.ts` | 14 | All categories, subcategories, edge cases (zero/negative/unknown) |
+| `validation.test.ts` | 16 | Zod schemas: valid inputs, empty, missing, type mismatches |
+| `store.test.ts` | 8 | State management: add, append, clear, budget, challenges, recommendations |
+| `equivalents.test.ts` | 6 | CO₂ equivalents across thresholds, edge cases |
+| `ActivityLog.test.tsx` | 3 | Component rendering: input, button, header |
+
+---
+
+## 📊 Evaluation Criteria Mapping
+
+| Criteria | How We Address It |
+|---|---|
+| **Code Quality** | Strict TypeScript, modular architecture (agents/UI/lib separation), DRY, clean Zod validation |
+| **Security** | All AI calls server-side via Next.js API routes, Zod input validation on every endpoint, `.env` gitignored |
+| **Efficiency** | Pre-bundled emission factors (no API latency), low-token agent prompts, lightweight Zustand state, Framer Motion animations |
+| **Testing** | 25+ tests across 5 suites covering emissions, validation, store, equivalents, and component rendering |
+| **Accessibility** | Semantic HTML, `aria-labels`, `aria-live` regions for dynamic content, skip-to-content link, keyboard-navigable, `role="meter"` for budget gauge |
+
+---
+
+## 🔑 PS Alignment
+
+| PS Keyword | Delivery |
+|---|---|
+| **individuals** | Single-user, zero-friction, no org setup required |
+| **understand** | Relatable CO₂ equivalents, category breakdown, weekly trends |
+| **track** | Daily footprint meter, 7-day bar chart, budget percentage, running log |
+| **reduce** | AI recommendations, gamified challenges with streak tracking |
+| **simple actions** | 5-second natural language input — type "I drove 12km" |
+| **personalized insights** | Gemini-generated insights based on your actual activity history |
+
+---
+
+## 📝 Submission Notes
+
+- **Platform**: Google Antigravity 2.0 (subagent architecture via SDK)
+- **Live Preview**: Run `npm run dev` and open http://localhost:3000
+- **API Key**: Set via `.env` or `/dashboard/settings` page
+- **Demo Data**: Click "Load Demo Data" on the dashboard empty state

@@ -2,24 +2,38 @@
 import { useEffect, useState } from "react";
 import { useStore } from "../../lib/store";
 import { ActivityLog } from "../../components/ActivityLog";
-import { Leaf, Zap, Map, Database } from "lucide-react";
+import { Leaf, Zap, Map, Database, Target, TrendingDown } from "lucide-react";
 import { motion } from "framer-motion";
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+} from "recharts";
 
-const COLORS = {
-  transport: "#14b8a6", // teal
-  food: "#f87171", // red/peach
-  energy: "#fbbf24", // yellow
-  shopping: "#a78bfa", // purple
+const COLORS: Record<string, string> = {
+  transport: "#14b8a6",
+  food: "#f87171",
+  energy: "#fbbf24",
+  shopping: "#a78bfa",
 };
 
 export default function Dashboard() {
   const {
     activities,
-    loadSampleData,
     dailyFootprint,
+    budgetUsed,
+    weeklyTrend,
     recommendations,
+    challenges,
     insight,
+    loadSampleData,
+    toggleChallenge,
   } = useStore();
   const [mounted, setMounted] = useState(false);
 
@@ -41,11 +55,14 @@ export default function Dashboard() {
     [] as { name: string; value: number }[],
   );
 
+  const dailyBudget = typeof window !== "undefined" ? parseFloat(localStorage.getItem("CARBON_BUDGET") || "10") : 10;
+  const remaining = Math.max(dailyBudget - dailyFootprint, 0);
+
   if (!mounted) return null;
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-12">
-      <header className="mb-12">
+      <header className="mb-12" aria-live="polite">
         <h1 className="text-[40px] font-medium text-ink tracking-[-1.0px] mb-2">
           Welcome back.
         </h1>
@@ -64,40 +81,69 @@ export default function Dashboard() {
           animate={{ opacity: 1, y: 0 }}
           className="grid grid-cols-1 md:grid-cols-3 gap-8"
         >
+          {/* Footprint Card */}
           <div className="col-span-1 bg-brand-teal text-white rounded-[24px] p-8 flex flex-col justify-between">
             <div>
               <h3 className="text-[18px] font-semibold mb-4 flex items-center gap-2">
                 <Leaf className="w-6 h-6 text-brand-mint" />
                 Daily Footprint
               </h3>
-              <div className="flex items-baseline gap-2 mb-4">
+              <div className="flex items-baseline gap-2 mb-1">
                 <span className="text-[64px] font-medium leading-none tracking-[-1.5px]">
                   {dailyFootprint.toFixed(1)}
                 </span>
-                <span className="text-white/80 font-medium">kg CO2e</span>
+                <span className="text-white/80 font-medium">kg CO₂e</span>
+              </div>
+              <p className="text-brand-mint text-[15px] font-semibold mb-6">
+                {budgetUsed.toFixed(0)}% of {dailyBudget} kg daily budget
+              </p>
+              {remaining > 0 ? (
+                <p className="text-white/70 text-[14px] font-medium">
+                  <TrendingDown className="w-4 h-4 inline mr-1" />
+                  {remaining.toFixed(1)} kg remaining today
+                </p>
+              ) : (
+                <p className="text-brand-pink text-[14px] font-medium">
+                  Over budget by {Math.abs(remaining).toFixed(1)} kg
+                </p>
+              )}
+            </div>
+
+            {/* Budget Meter */}
+            <div className="mt-6">
+              <div className="h-3 bg-black/20 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-brand-mint rounded-full transition-all duration-500"
+                  style={{ width: `${Math.min(budgetUsed, 100)}%` }}
+                  role="meter"
+                  aria-valuenow={budgetUsed}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                />
               </div>
             </div>
 
             {chartData.length > 0 && (
-              <div className="h-[200px] w-full mt-4">
+              <div
+                className="h-[180px] w-full mt-6"
+                role="img"
+                aria-label="Category breakdown chart"
+              >
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
                       data={chartData}
                       cx="50%"
                       cy="50%"
-                      innerRadius={60}
-                      outerRadius={80}
+                      innerRadius={50}
+                      outerRadius={70}
                       paddingAngle={5}
                       dataKey="value"
                     >
                       {chartData.map((entry, index) => (
                         <Cell
                           key={`cell-${index}`}
-                          fill={
-                            COLORS[entry.name as keyof typeof COLORS] ||
-                            "#94a3b8"
-                          }
+                          fill={COLORS[entry.name] || "#94a3b8"}
                         />
                       ))}
                     </Pie>
@@ -118,19 +164,20 @@ export default function Dashboard() {
               </div>
             )}
 
-            <div className="bg-black/20 rounded-xl p-4 mt-6">
+            <div className="bg-black/20 rounded-xl p-4 mt-6" aria-live="polite">
               <p className="text-[15px] font-medium text-white/90">
                 {insight || "Every small step counts towards a greener future."}
               </p>
             </div>
           </div>
 
+          {/* Recommendations */}
           <div className="col-span-2 bg-brand-peach text-ink rounded-[24px] p-8">
             <h3 className="text-[20px] font-semibold mb-6 flex items-center gap-2 tracking-tight">
               <Zap className="w-6 h-6" />
-              AI Leverage Points
+              AI Recommendations
             </h3>
-            <div className="grid gap-4">
+            <div className="grid gap-4" aria-live="polite">
               {recommendations.length > 0 ? (
                 recommendations.map((rec, i) => (
                   <motion.div
@@ -160,14 +207,82 @@ export default function Dashboard() {
                 ))
               ) : (
                 <div className="text-ink/60 text-[15px] font-medium p-6 text-center border-2 border-dashed border-ink/20 rounded-xl bg-canvas/40">
-                  Log more activities to get personalized leverage point
-                  recommendations.
+                  Log more activities to get personalized recommendations.
                 </div>
               )}
             </div>
           </div>
 
-          <div className="col-span-3 bg-surface-card rounded-[24px] p-8 mt-4 border border-hairline shadow-sm">
+          {/* Weekly Trend */}
+          {weeklyTrend.length > 0 && (
+            <div className="col-span-3 md:col-span-1 bg-surface-card rounded-[24px] p-8 border border-hairline shadow-sm">
+              <h3 className="text-[18px] font-semibold text-ink mb-6 flex items-center gap-2 tracking-tight">
+                <Target className="w-5 h-5 text-brand-pink" />
+                Weekly Trend
+              </h3>
+              <div
+                className="h-[200px]"
+                role="img"
+                aria-label="7-day carbon emission trend"
+              >
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={weeklyTrend}>
+                    <XAxis
+                      dataKey="date"
+                      tick={{ fontSize: 12, fill: "#6a6a6a" }}
+                    />
+                    <YAxis hide />
+                    <Bar dataKey="value" fill="#14b8a6" radius={[6, 6, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          )}
+
+          {/* Challenges */}
+          <div className="col-span-3 md:col-span-2 bg-surface-card rounded-[24px] p-8 border border-hairline shadow-sm">
+            <h3 className="text-[18px] font-semibold text-ink mb-6 flex items-center gap-2 tracking-tight">
+              <Target className="w-5 h-5 text-brand-teal" />
+              Challenges
+            </h3>
+            <div className="grid gap-3">
+              {challenges.map((c) => (
+                <motion.button
+                  key={c.id}
+                  onClick={() => toggleChallenge(c.id)}
+                  className={`w-full text-left rounded-xl p-4 flex items-center justify-between border transition-all ${
+                    c.active
+                      ? "bg-brand-teal text-white border-brand-teal"
+                      : "bg-canvas text-ink border-hairline hover:border-brand-teal/40"
+                  }`}
+                  aria-pressed={c.active}
+                >
+                  <div>
+                    <div className="font-semibold text-[15px]">{c.title}</div>
+                    <div
+                      className={`text-[13px] mt-0.5 ${c.active ? "text-white/80" : "text-muted"}`}
+                    >
+                      {c.description}
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0 ml-4">
+                    {c.active ? (
+                      <span className="text-brand-mint font-bold text-[14px]">
+                        🔥 {c.streak} day{c.streak !== 1 ? "s" : ""}
+                      </span>
+                    ) : (
+                      <span className="text-muted text-[13px] font-medium">
+                        Start
+                      </span>
+                    )}
+                  </div>
+                </motion.button>
+              ))}
+            </div>
+          </div>
+
+          {/* Recent Logs */}
+          <div className="col-span-3 bg-surface-card rounded-[24px] p-8 border border-hairline shadow-sm">
             <h3 className="text-[20px] font-semibold text-ink mb-6 flex items-center gap-2 tracking-tight">
               <Map className="w-6 h-6 text-brand-pink" />
               Recent Logs

@@ -37,11 +37,15 @@ Return ONLY a JSON object with this exact structure, with no markdown formatting
 Input: "${input}"
 `;
   const response = await ai.models.generateContent({
-    model: "gemini-flash-latest",
+    model: "gemini-2.5-flash",
     contents: prompt,
     config: { responseMimeType: "application/json" },
   });
-  return JSON.parse(response.text || "{}");
+  try {
+    return JSON.parse(response.text || "{}");
+  } catch {
+    return {};
+  }
 }
 
 export async function processUserLog(
@@ -66,7 +70,7 @@ export async function processUserLog(
     amt = parsed.amount;
   }
 
-  if (!cat || !subCat || amt === undefined) {
+  if (!cat || !subCat || amt === undefined || amt === null) {
     throw new Error("Invalid input data");
   }
 
