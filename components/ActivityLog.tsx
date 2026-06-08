@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useStore } from "../lib/store";
 import { motion } from "framer-motion";
 import { Terminal, Send } from "lucide-react";
+import { calculateActivityEmissions } from "../lib/agents/calculator";
 
 export function ActivityLog() {
   const [input, setInput] = useState("");
@@ -17,23 +18,59 @@ export function ActivityLog() {
     setInput("");
 
     try {
-      const response = await fetch("/api/analyze", {
+      const apiKeyOverride = localStorage.getItem("GEMINI_API_KEY");
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      if (apiKeyOverride) headers["x-api-key"] = apiKeyOverride;
+
+      // 1. Parse Input
+      const parseRes = await fetch("/api/parse", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ input: { raw: rawInput }, history: activities, budget: 10 }),
+        headers,
+        body: JSON.stringify({ input: rawInput }),
       });
-      
-      if (!response.ok) throw new Error("Failed");
-      const data = await response.json();
-      
-      addActivity(data.activity);
-      if (data.recommendations?.length) setRecommendations(data.recommendations);
-      if (data.insight) setInsight(data.insight);
-      
+      if (!parseRes.ok) throw new Error("Failed to parse");
+      const parsed = await parseRes.json();
+
+      if (!parsed.category || !parsed.subCategory || parsed.amount === undefined) {
+        throw new Error("Could not understand input.");
+      }
+
+      // 2. Synchronous UI Update
+      const newActivityData = calculateActivityEmissions(parsed.category, parsed.subCategory, parsed.amount, rawInput);
+      const newActivity = {
+        id: Date.now().toString(),
+        timestamp: new Date().toISOString(),
+        ...newActivityData
+      };
+      addActivity(newActivity);
+
+      // 3. Background AI Tasks (Recommendations & Insights)
+      const updatedHistory = [...activities, newActivity];
+      const budget = parseFloat(localStorage.getItem("CARBON_BUDGET") || "10");
+
+      Promise.all([
+        fetch("/api/recommend", {
+          method: "POST",
+          headers,
+          body: JSON.stringify({ history: updatedHistory }),
+        }).then(res => res.json()).then(data => {
+          if (data.recommendations?.length) setRecommendations(data.recommendations);
+        }).catch(console.error),
+
+        fetch("/api/insight", {
+          method: "POST",
+          headers,
+          body: JSON.stringify({ history: updatedHistory, budget }),
+        }).then(res => res.json()).then(data => {
+          if (data.insight) setInsight(data.insight);
+        }).catch(console.error)
+      ]).finally(() => {
+        setIsProcessing(false);
+      });
+
     } catch (err) {
       console.error(err);
       setInput(rawInput);
-    } finally {
       setIsProcessing(false);
     }
   };

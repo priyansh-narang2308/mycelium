@@ -1,14 +1,13 @@
 import Link from "next/link";
-import { Leaf, BarChart2, Globe, Sparkles, CheckCircle2 } from "lucide-react";
+import { Leaf, BarChart2, Globe, Sparkles } from "lucide-react";
 
 export default function Home() {
   return (
     <main className="min-h-screen bg-canvas text-body font-sans selection:bg-brand-pink selection:text-white flex flex-col">
-
       <section className="relative z-10 max-w-6xl mx-auto px-6 pt-32 pb-24 w-full mt-16">
         <header className="flex flex-col md:flex-row items-center justify-between gap-12">
           <div className="md:w-7/12 text-center md:text-left">
-            <h1 className="text-[56px] md:text-[80px] font-medium text-ink tracking-[-2.5px] leading-[1.0] mb-6">
+            <h1 className="text-[56px] md:text-[80px] font-medium text-ink tracking-[-2.5px] leading-none mb-6">
               Go to market with a lighter footprint.
             </h1>
             <p className="text-[18px] md:text-[20px] text-muted max-w-xl leading-relaxed mb-10 font-medium mx-auto md:mx-0">
@@ -25,7 +24,7 @@ export default function Home() {
               </Link>
             </div>
           </div>
-          <div className="md:w-5/12 flex justify-center hidden md:flex relative">
+          <div className="md:w-5/12 flex justify-center md:flex relative">
             <div className="w-[400px] h-[400px] bg-brand-pink rounded-[48px] transform rotate-3 flex items-center justify-center shadow-xl border border-ink/5">
               <Leaf className="w-40 h-40 text-ink opacity-90" />
             </div>
@@ -112,21 +111,20 @@ export default function Home() {
         </div>
       </section>
 
-{/* Footer */}
-<footer className="w-full border-t border-hairline py-6 px-6">
-  <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-muted">
-    <p>© 2026 Carbon Pulse. All rights reserved.</p>
+      <footer className="w-full border-t border-hairline py-6 px-6">
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-muted">
+          <p>© 2026 Carbon Pulse. All rights reserved.</p>
 
-    <div className="flex items-center gap-6">
-      <Link href="#" className="hover:text-ink transition-colors">
-        Twitter
-      </Link>
-      <Link href="#" className="hover:text-ink transition-colors">
-        GitHub
-      </Link>
-    </div>
-  </div>
-</footer>
+          <div className="flex items-center gap-6">
+            <Link href="#" className="hover:text-ink transition-colors">
+              Twitter
+            </Link>
+            <Link href="#" className="hover:text-ink transition-colors">
+              GitHub
+            </Link>
+          </div>
+        </div>
+      </footer>
     </main>
   );
 }

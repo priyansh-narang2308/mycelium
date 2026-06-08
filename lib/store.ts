@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import { Activity, Recommendation } from './types';
+import { create } from "zustand";
+import { Activity, Recommendation } from "./types";
 
 interface AppState {
   activities: Activity[];
@@ -13,6 +13,7 @@ interface AppState {
   setInsight: (insight: string) => void;
   setIsProcessing: (status: boolean) => void;
   loadSampleData: () => Promise<void>;
+  clearActivities: () => void;
 }
 
 export const useStore = create<AppState>((set) => ({
@@ -22,30 +23,39 @@ export const useStore = create<AppState>((set) => ({
   recommendations: [],
   insight: null,
   isProcessing: false,
-  addActivity: (activity) => set((state) => {
-    const newActivities = [...state.activities, activity];
-    const daily = newActivities.reduce((sum, a) => sum + a.co2e, 0);
-    return { 
-      activities: newActivities,
-      dailyFootprint: daily,
-      budgetUsed: Math.min((daily / 10) * 100, 100)
-    };
-  }),
+  addActivity: (activity) =>
+    set((state) => {
+      const newActivities = [...state.activities, activity];
+      const daily = newActivities.reduce((sum, a) => sum + a.co2e, 0);
+      return {
+        activities: newActivities,
+        dailyFootprint: daily,
+        budgetUsed: Math.min((daily / 10) * 100, 100),
+      };
+    }),
   setRecommendations: (recs) => set({ recommendations: recs }),
   setInsight: (insight) => set({ insight }),
   setIsProcessing: (status) => set({ isProcessing: status }),
   loadSampleData: async () => {
     try {
-      const res = await fetch('/data/sample-activities.json');
+      const res = await fetch("/data/sample-activities.json");
       const data = await res.json();
       const daily = data.reduce((sum: number, a: Activity) => sum + a.co2e, 0);
-      set({ 
+      set({
         activities: data,
         dailyFootprint: daily,
-        budgetUsed: Math.min((daily / 10) * 100, 100)
+        budgetUsed: Math.min((daily / 10) * 100, 100),
       });
     } catch (e) {
       console.error("Failed to load sample data", e);
     }
-  }
+  },
+  clearActivities: () =>
+    set({
+      activities: [],
+      dailyFootprint: 0,
+      budgetUsed: 0,
+      recommendations: [],
+      insight: null,
+    }),
 }));

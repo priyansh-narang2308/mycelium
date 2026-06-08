@@ -1,10 +1,10 @@
 import { GoogleGenAI } from '@google/genai';
 import { Activity, Recommendation } from '../types';
 
-export async function getRecommendations(activities: Activity[]): Promise<Recommendation[]> {
+export async function getRecommendations(activities: Activity[], apiKeyOverride?: string): Promise<Recommendation[]> {
   if (activities.length === 0) return [];
   
-  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+  const ai = new GoogleGenAI({ apiKey: apiKeyOverride || process.env.GEMINI_API_KEY });
   
   const activitiesContext = activities.map(a => `${a.amount}${a.unit} of ${a.subCategory} (${a.co2e}kg CO2)`).join('\n');
   
