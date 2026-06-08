@@ -172,19 +172,33 @@ export const useStore = create<AppState>((set, get) => ({
   dailyBudget: preloadedBudget,
   region: getStoredRegion(),
 
-  setDailyBudget: (budget: number) => set({ dailyBudget: budget }),
-  setRegion: (region: string) => set({ region }),
+  setDailyBudget: (budget: number) =>
+    set((state) => {
+      if (typeof window !== "undefined") {
+        localStorage.setItem("CARBON_BUDGET", String(budget));
+      }
+      return {
+        dailyBudget: budget,
+        budgetUsed: Math.min((state.dailyFootprint / budget) * 100, 100),
+      };
+    }),
+  setRegion: (region: string) =>
+    set(() => {
+      if (typeof window !== "undefined") {
+        localStorage.setItem("CARBON_REGION", region);
+      }
+      return { region };
+    }),
 
   addActivity: (activity) =>
     set((state) => {
       const newActivities = [...state.activities, activity];
       persistActivities(newActivities);
       const daily = computeDailyFootprint(newActivities);
-      const budget = readBudget();
+      const budget = state.dailyBudget;
       return {
         activities: newActivities,
         dailyFootprint: daily,
-        dailyBudget: budget,
         budgetUsed: Math.min((daily / budget) * 100, 100),
         weeklyTrend: computeWeeklyTrend(newActivities),
       };

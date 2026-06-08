@@ -20,6 +20,7 @@ export function ActivityLog() {
     setIsProcessing,
     isProcessing,
     region,
+    dailyBudget,
   } = useStore();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -62,7 +63,7 @@ export function ActivityLog() {
       addActivity(newActivity);
 
       const updatedHistory = [...activities, newActivity];
-      const budget = parseFloat(localStorage.getItem("CARBON_BUDGET") || "10");
+      const budget = dailyBudget;
 
       try {
         const [recRes, insRes] = await Promise.all([

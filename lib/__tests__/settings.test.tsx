@@ -5,6 +5,8 @@ const mockSetDailyBudget = jest.fn();
 const mockSetRegion = jest.fn();
 
 const mockStore = {
+  dailyBudget: 10,
+  region: "global",
   setDailyBudget: mockSetDailyBudget,
   setRegion: mockSetRegion,
 };

@@ -1,6 +1,7 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 import { Settings2, Database, Globe } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useStore } from "@/lib/store";
 import { REGION_GRID_FACTORS, DEFAULT_REGION } from "@/lib/emissions";
@@ -11,14 +12,18 @@ import type { JSX } from "react";
  * and regional grid offsets to personalize calculation methodologies.
  */
 export default function SettingsPage(): JSX.Element {
+  const dailyBudget = useStore((s) => s.dailyBudget);
+  const region = useStore((s) => s.region);
   const setDailyBudget = useStore((s) => s.setDailyBudget);
   const setRegion = useStore((s) => s.setRegion);
+
   const [budget, setBudget] = useState("10");
-  const [region, setRegionLocal] = useState(
-    typeof window !== "undefined"
-      ? localStorage.getItem("CARBON_REGION") || DEFAULT_REGION
-      : DEFAULT_REGION,
-  );
+  const [regionLocal, setRegionLocal] = useState(DEFAULT_REGION);
+
+  useEffect(() => {
+    setBudget(dailyBudget.toString());
+    setRegionLocal(region);
+  }, [dailyBudget, region]);
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,8 +32,8 @@ export default function SettingsPage(): JSX.Element {
       localStorage.setItem("CARBON_BUDGET", budget);
       setDailyBudget(budgetNum);
     }
-    localStorage.setItem("CARBON_REGION", region);
-    setRegion(region);
+    localStorage.setItem("CARBON_REGION", regionLocal);
+    setRegion(regionLocal);
     toast.success("Settings saved successfully!");
   };
 
@@ -52,7 +57,10 @@ export default function SettingsPage(): JSX.Element {
           </h2>
           <div className="space-y-6">
             <div>
-              <label htmlFor="budget" className="block text-[15px] font-semibold text-ink mb-2">
+              <label
+                htmlFor="budget"
+                className="block text-[15px] font-semibold text-ink mb-2"
+              >
                 Daily Carbon Budget (kg CO₂e)
               </label>
               <p className="text-[14px] text-muted font-medium mb-3">
@@ -68,7 +76,10 @@ export default function SettingsPage(): JSX.Element {
             </div>
 
             <div>
-              <label htmlFor="region" className="block text-[15px] font-semibold text-ink mb-2">
+              <label
+                htmlFor="region"
+                className="block text-[15px] font-semibold text-ink mb-2"
+              >
                 <Globe
                   className="w-4 h-4 inline mr-1.5 -mt-0.5"
                   aria-hidden="true"
@@ -81,7 +92,7 @@ export default function SettingsPage(): JSX.Element {
               </p>
               <select
                 id="region"
-                value={region}
+                value={regionLocal}
                 onChange={(e) => setRegionLocal(e.target.value)}
                 className="w-full max-w-md bg-surface-soft border border-hairline rounded-xl px-4 py-3 text-ink font-medium focus:outline-none focus:border-brand-teal transition-colors"
               >
