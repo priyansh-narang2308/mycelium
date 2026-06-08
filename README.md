@@ -1,6 +1,6 @@
 # MYCELIUM — PromptWars Challenge 3
 
-> AI-powered personal carbon coach. Log your activities naturally, get instant CO₂ calculations, personalized swaps, and gamified challenges — all powered by Google Antigravity + Gemini 3.5 Flash.
+> AI-powered personal carbon coach. Log your activities naturally, get instant CO₂ calculations, personalized swaps, and gamified challenges.
 
 **Problem Statement**: _Design a solution that helps individuals understand, track, and reduce their carbon footprint through simple actions and personalized insights._
 

@@ -6,15 +6,34 @@ import { Leaf, Zap, Map, Database, Target, TrendingDown } from "lucide-react";
 import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
 
-const PieChart = dynamic(() => import("recharts").then((m) => m.PieChart), { ssr: false });
-const Pie = dynamic(() => import("recharts").then((m) => m.Pie), { ssr: false });
-const Cell = dynamic(() => import("recharts").then((m) => m.Cell), { ssr: false });
-const Tooltip = dynamic(() => import("recharts").then((m) => m.Tooltip), { ssr: false });
-const ResponsiveContainer = dynamic(() => import("recharts").then((m) => m.ResponsiveContainer), { ssr: false });
-const BarChart = dynamic(() => import("recharts").then((m) => m.BarChart), { ssr: false });
-const Bar = dynamic(() => import("recharts").then((m) => m.Bar), { ssr: false });
-const XAxis = dynamic(() => import("recharts").then((m) => m.XAxis), { ssr: false });
-const YAxis = dynamic(() => import("recharts").then((m) => m.YAxis), { ssr: false });
+const PieChart = dynamic(() => import("recharts").then((m) => m.PieChart), {
+  ssr: false,
+});
+const Pie = dynamic(() => import("recharts").then((m) => m.Pie), {
+  ssr: false,
+});
+const Cell = dynamic(() => import("recharts").then((m) => m.Cell), {
+  ssr: false,
+});
+const Tooltip = dynamic(() => import("recharts").then((m) => m.Tooltip), {
+  ssr: false,
+});
+const ResponsiveContainer = dynamic(
+  () => import("recharts").then((m) => m.ResponsiveContainer),
+  { ssr: false },
+);
+const BarChart = dynamic(() => import("recharts").then((m) => m.BarChart), {
+  ssr: false,
+});
+const Bar = dynamic(() => import("recharts").then((m) => m.Bar), {
+  ssr: false,
+});
+const XAxis = dynamic(() => import("recharts").then((m) => m.XAxis), {
+  ssr: false,
+});
+const YAxis = dynamic(() => import("recharts").then((m) => m.YAxis), {
+  ssr: false,
+});
 
 const COLORS: Record<string, string> = {
   transport: "#14b8a6",
@@ -60,7 +79,10 @@ export default function Dashboard() {
     [activities],
   );
 
-  const remaining = useMemo(() => Math.max(dailyBudget - dailyFootprint, 0), [dailyBudget, dailyFootprint]);
+  const remaining = useMemo(
+    () => Math.max(dailyBudget - dailyFootprint, 0),
+    [dailyBudget, dailyFootprint],
+  );
 
   if (!mounted) return null;
 
@@ -103,7 +125,10 @@ export default function Dashboard() {
               </p>
               {remaining > 0 ? (
                 <p className="text-white/70 text-[14px] font-medium">
-                  <TrendingDown className="w-4 h-4 inline mr-1" aria-hidden="true" />
+                  <TrendingDown
+                    className="w-4 h-4 inline mr-1"
+                    aria-hidden="true"
+                  />
                   {remaining.toFixed(1)} kg remaining today
                 </p>
               ) : (
@@ -166,10 +191,21 @@ export default function Dashboard() {
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
-                <div className="mt-3 flex flex-wrap gap-3 text-[12px] font-semibold" aria-hidden="true">
+                <div
+                  className="mt-3 flex flex-wrap gap-3 text-[12px] font-semibold"
+                  aria-hidden="true"
+                >
                   {chartData.map((entry) => (
-                    <span key={entry.name} className="flex items-center gap-1.5 capitalize">
-                      <span className="w-3 h-3 rounded-sm inline-block" style={{ backgroundColor: COLORS[entry.name] || "#94a3b8" }} />
+                    <span
+                      key={entry.name}
+                      className="flex items-center gap-1.5 capitalize"
+                    >
+                      <span
+                        className="w-3 h-3 rounded-sm inline-block"
+                        style={{
+                          backgroundColor: COLORS[entry.name] || "#94a3b8",
+                        }}
+                      />
                       {entry.name}: {entry.value.toFixed(1)} kg
                     </span>
                   ))}
@@ -230,7 +266,10 @@ export default function Dashboard() {
           {weeklyTrend.length > 0 && (
             <div className="col-span-3 md:col-span-1 bg-surface-card rounded-[24px] p-8 border border-hairline shadow-sm">
               <h3 className="text-[18px] font-semibold text-ink mb-6 flex items-center gap-2 tracking-tight">
-                <Target className="w-5 h-5 text-brand-pink" aria-hidden="true" />
+                <Target
+                  className="w-5 h-5 text-brand-pink"
+                  aria-hidden="true"
+                />
                 Weekly Trend
               </h3>
               <div
