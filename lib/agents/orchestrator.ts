@@ -1,8 +1,4 @@
 import { GoogleGenAI } from "@google/genai";
-import { calculateActivityEmissions } from "./calculator";
-import { getRecommendations } from "./recommender";
-import { generateInsight } from "./insights";
-import { Activity } from "../types";
 
 export async function parseNaturalLanguage(
   input: string,
@@ -46,57 +42,4 @@ Input: "${input}"
   } catch {
     return {};
   }
-}
-
-export async function processUserLog(
-  input: {
-    raw?: string;
-    category?: string;
-    subCategory?: string;
-    amount?: number;
-  },
-  history: Activity[],
-  budget: number,
-  apiKeyOverride?: string,
-) {
-  let cat = input.category;
-  let subCat = input.subCategory;
-  let amt = input.amount;
-
-  if (input.raw && (!cat || !subCat || !amt)) {
-    const parsed = await parseNaturalLanguage(input.raw, apiKeyOverride);
-    cat = parsed.category;
-    subCat = parsed.subCategory;
-    amt = parsed.amount;
-  }
-
-  if (!cat || !subCat || amt === undefined || amt === null) {
-    throw new Error("Invalid input data");
-  }
-
-  const newActivityData = calculateActivityEmissions(
-    cat,
-    subCat,
-    amt,
-    input.raw,
-  );
-
-  const newActivity: Activity = {
-    id: Date.now().toString(),
-    timestamp: new Date().toISOString(),
-    ...newActivityData,
-  };
-
-  const updatedHistory = [...history, newActivity];
-
-  const [recommendations, insight] = await Promise.all([
-    getRecommendations(updatedHistory, apiKeyOverride),
-    generateInsight(updatedHistory, budget, apiKeyOverride),
-  ]);
-
-  return {
-    activity: newActivity,
-    recommendations,
-    insight,
-  };
 }

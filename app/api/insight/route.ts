@@ -15,8 +15,7 @@ export async function POST(req: Request) {
       apiKeyOverride,
     );
     return NextResponse.json({ insight });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
+  } catch (error: unknown) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { error: "Invalid insight data provided." },

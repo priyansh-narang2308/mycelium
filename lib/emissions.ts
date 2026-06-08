@@ -1,3 +1,8 @@
+type FactorEntry = { value: number; unit: string; description: string };
+type EmissionFactors = {
+  [C: string]: { [S: string]: FactorEntry };
+};
+
 export const EMISSION_FACTORS = {
   transport: {
     car: { value: 0.17, unit: "km", description: "Average gasoline car" },
@@ -30,18 +35,17 @@ export const EMISSION_FACTORS = {
     tshirt: { value: 5, unit: "item", description: "Cotton t-shirt" },
     jeans: { value: 20, unit: "item", description: "Denim jeans" },
   },
-};
+} satisfies EmissionFactors;
+
+export type EmissionCategory = keyof typeof EMISSION_FACTORS;
+export type EmissionSubCategory<C extends EmissionCategory> = keyof (typeof EMISSION_FACTORS)[C];
 
 export function calculateEmissions(
   category: string,
   subCategory: string,
   amount: number,
 ): number {
-  const factors = EMISSION_FACTORS as Record<
-    string,
-    Record<string, { value: number; unit: string; description: string }>
-  >;
-
+  const factors = EMISSION_FACTORS as EmissionFactors;
   const factor = factors[category]?.[subCategory]?.value;
   if (factor === undefined) return 0;
   return factor * amount;

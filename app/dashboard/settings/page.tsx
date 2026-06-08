@@ -2,8 +2,10 @@
 import { Settings2, Key, Database } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useStore } from "../../../lib/store";
 
 export default function SettingsPage() {
+  const setDailyBudget = useStore((s) => s.setDailyBudget);
   const [apiKey, setApiKey] = useState("");
   const [budget, setBudget] = useState("10");
 
@@ -12,7 +14,11 @@ export default function SettingsPage() {
     if (apiKey) {
       localStorage.setItem("GEMINI_API_KEY", apiKey);
     }
-    localStorage.setItem("CARBON_BUDGET", budget);
+    const budgetNum = parseFloat(budget);
+    if (!isNaN(budgetNum) && budgetNum > 0) {
+      localStorage.setItem("CARBON_BUDGET", budget);
+      setDailyBudget(budgetNum);
+    }
     toast.success("Settings saved successfully!");
   };
 

@@ -14,6 +14,7 @@ interface AppState {
   isProcessing: boolean;
   dailyBudget: number;
   addActivity: (activity: Activity) => void;
+  setDailyBudget: (budget: number) => void;
   setRecommendations: (recs: Recommendation[]) => void;
   setInsight: (insight: string) => void;
   setIsProcessing: (status: boolean) => void;
@@ -88,6 +89,8 @@ export const useStore = create<AppState>((set) => ({
   isProcessing: false,
   dailyBudget: 10,
 
+  setDailyBudget: (budget: number) => set({ dailyBudget: budget }),
+
   addActivity: (activity) =>
     set((state) => {
       const newActivities = [...state.activities, activity];
@@ -96,6 +99,7 @@ export const useStore = create<AppState>((set) => ({
       return {
         activities: newActivities,
         dailyFootprint: daily,
+        dailyBudget: budget,
         budgetUsed: Math.min((daily / budget) * 100, 100),
         weeklyTrend: computeWeeklyTrend(newActivities),
       };
@@ -127,6 +131,7 @@ export const useStore = create<AppState>((set) => ({
       set({
         activities: data,
         dailyFootprint: daily,
+        dailyBudget: budget,
         budgetUsed: Math.min((daily / budget) * 100, 100),
         weeklyTrend: computeWeeklyTrend(data),
       });
@@ -137,15 +142,18 @@ export const useStore = create<AppState>((set) => ({
     }
   },
 
-  clearActivities: () =>
+  clearActivities: () => {
+    const budget = parseFloat(localStorage.getItem("CARBON_BUDGET") || "10");
     set({
       activities: [],
       dailyFootprint: 0,
+      dailyBudget: budget,
       budgetUsed: 0,
       weeklyTrend: [],
       recommendations: [],
       insight: null,
-    }),
+    });
+  },
 
   getDailyBudget: () => {
     return parseFloat(localStorage.getItem("CARBON_BUDGET") || "10");

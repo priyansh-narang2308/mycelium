@@ -53,11 +53,7 @@ export default function LogsPage() {
                       className="border-b border-hairline last:border-0 hover:bg-surface-soft/50 transition-colors"
                     >
                       <td className="p-4 pl-6 whitespace-nowrap text-muted text-[14px] font-medium">
-                        {format(
-                          // eslint-disable-next-line react-hooks/purity
-                          new Date(act.timestamp || Date.now()),
-                          "MMM d, yyyy HH:mm",
-                        )}
+                        {format(new Date(act.timestamp), "MMM d, yyyy HH:mm")}
                       </td>
                       <td className="p-4 font-semibold text-ink text-[15px] capitalize">
                         {act.category} &rsaquo; {act.subCategory}

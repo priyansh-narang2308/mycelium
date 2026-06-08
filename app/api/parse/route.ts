@@ -11,8 +11,7 @@ export async function POST(req: Request) {
 
     const parsed = await parseNaturalLanguage(validatedData.input, apiKeyOverride);
     return NextResponse.json(parsed);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
+  } catch (error: unknown) {
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: "Invalid input data provided." }, { status: 400 });
     }
