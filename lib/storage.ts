@@ -1,3 +1,4 @@
+
 import { Activity } from "@/lib/types";
 import { DEFAULT_REGION } from "@/lib/emissions";
 

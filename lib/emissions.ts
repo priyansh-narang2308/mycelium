@@ -61,7 +61,6 @@ export function getRegionFactor(region: string): number {
   return REGION_GRID_FACTORS[region]?.factor ?? 1.0;
 }
 
-
 export function calculateEmissions(
   category: string,
   subCategory: string,
