@@ -43,6 +43,7 @@ export default function DashboardLayout({
           <button
             className="md:hidden text-ink"
             onClick={() => setIsMobileOpen(false)}
+            aria-label="Close menu"
           >
             <X className="w-6 h-6" />
           </button>
@@ -94,7 +95,7 @@ export default function DashboardLayout({
             </span>
             Carbon Pulse
           </Link>
-          <button className="text-ink" onClick={() => setIsMobileOpen(true)}>
+          <button className="text-ink" onClick={() => setIsMobileOpen(true)} aria-label="Open menu">
             <Menu className="w-6 h-6" />
           </button>
         </header>

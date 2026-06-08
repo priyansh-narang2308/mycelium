@@ -87,11 +87,13 @@ export function ActivityLog() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="e.g. I drove 12km today..."
+          aria-label="Activity input"
           className="w-full bg-transparent text-ink px-6 py-5 outline-none placeholder:text-muted text-[18px] font-medium"
           disabled={isProcessing}
         />
         <button 
           type="submit" 
+          aria-label="Submit activity"
           disabled={!input.trim() || isProcessing}
           className="absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-xl bg-primary text-on-primary hover:opacity-90 disabled:opacity-50 transition-colors"
         >

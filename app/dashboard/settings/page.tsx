@@ -35,9 +35,13 @@ export default function SettingsPage() {
           </h2>
           <div className="space-y-6">
             <div>
-              <label className="block text-[15px] font-semibold text-ink mb-2">Daily Carbon Budget (kg CO₂e)</label>
-              <p className="text-[14px] text-muted font-medium mb-3">Set your target maximum emissions for a single day.</p>
-              <input 
+              <label className="block text-[15px] font-semibold text-ink mb-2">
+                Daily Carbon Budget (kg CO₂e)
+              </label>
+              <p className="text-[14px] text-muted font-medium mb-3">
+                Set your target maximum emissions for a single day.
+              </p>
+              <input
                 type="number"
                 value={budget}
                 onChange={(e) => setBudget(e.target.value)}
@@ -54,11 +58,15 @@ export default function SettingsPage() {
           </h2>
           <div className="space-y-6">
             <div>
-              <label className="block text-[15px] font-semibold text-ink mb-2">Gemini API Key</label>
+              <label className="block text-[15px] font-semibold text-ink mb-2">
+                Gemini API Key
+              </label>
               <p className="text-[14px] text-muted font-medium mb-3">
-                If you are a judge reviewing this project locally, you can plug in your own Gemini API key here to test the AI features dynamically.
+                If you are a judge reviewing this project locally, you can plug
+                in your own Gemini API key here to test the AI features
+                dynamically.
               </p>
-              <input 
+              <input
                 type="password"
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
@@ -70,7 +78,7 @@ export default function SettingsPage() {
         </section>
 
         <div className="flex justify-end">
-          <button 
+          <button
             type="submit"
             className="px-8 py-4 bg-ink text-canvas rounded-xl font-bold text-[16px] hover:opacity-90 transition-opacity shadow-sm"
           >
