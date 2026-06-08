@@ -20,6 +20,10 @@ describe("parseInputSchema", () => {
   it("rejects non-string input", () => {
     expect(parseInputSchema.safeParse({ input: 123 }).success).toBe(false);
   });
+
+  it("accepts optional region field", () => {
+    expect(parseInputSchema.safeParse({ input: "drove 10km", region: "india" }).success).toBe(true);
+  });
 });
 
 describe("activitySchema", () => {
@@ -68,6 +72,10 @@ describe("recommendSchema", () => {
   it("rejects non-array history", () => {
     expect(recommendSchema.safeParse({ history: "not-array" }).success).toBe(false);
   });
+
+  it("accepts optional region field", () => {
+    expect(recommendSchema.safeParse({ history: [], region: "france" }).success).toBe(true);
+  });
 });
 
 describe("insightSchema", () => {
@@ -86,5 +94,9 @@ describe("insightSchema", () => {
 
   it("rejects non-numeric budget", () => {
     expect(insightSchema.safeParse({ history: [], budget: "ten" }).success).toBe(false);
+  });
+
+  it("accepts optional region field", () => {
+    expect(insightSchema.safeParse({ history: [], budget: 10, region: "uk" }).success).toBe(true);
   });
 });

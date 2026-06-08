@@ -7,11 +7,11 @@ export function calculateActivityEmissions(
   subCategory: string,
   amount: number,
   rawInput?: string,
+  region?: string,
 ): Omit<Activity, "id" | "timestamp"> {
-  const co2e = calculateEmissions(category, subCategory, amount);
+  const co2e = calculateEmissions(category, subCategory, amount, region);
   const equivalent = getEquivalent(co2e);
 
-  // Lookup unit safely
   const factors = EMISSION_FACTORS as Record<
     string,
     Record<string, { unit: string }>

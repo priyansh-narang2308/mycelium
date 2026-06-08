@@ -13,6 +13,7 @@ export async function POST(req: Request) {
       validatedData.history,
       validatedData.budget,
       apiKeyOverride,
+      validatedData.region,
     );
     return NextResponse.json({ insight });
   } catch (error: unknown) {

@@ -9,12 +9,22 @@ export async function POST(req: Request) {
     const validatedData = parseInputSchema.parse(body);
     const apiKeyOverride = req.headers.get("x-api-key") || undefined;
 
-    const parsed = await parseNaturalLanguage(validatedData.input, apiKeyOverride);
+    const parsed = await parseNaturalLanguage(
+      validatedData.input,
+      apiKeyOverride,
+      validatedData.region,
+    );
     return NextResponse.json(parsed);
   } catch (error: unknown) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: "Invalid input data provided." }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid input data provided." },
+        { status: 400 },
+      );
     }
-    return NextResponse.json({ error: "An unexpected error occurred during processing." }, { status: 500 });
+    return NextResponse.json(
+      { error: "An unexpected error occurred during processing." },
+      { status: 500 },
+    );
   }
 }

@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export const parseInputSchema = z.object({
   input: z.string().min(1).max(500),
+  region: z.string().optional(),
 });
 
 export const activitySchema = z.object({
@@ -18,9 +19,11 @@ export const activitySchema = z.object({
 
 export const recommendSchema = z.object({
   history: z.array(activitySchema),
+  region: z.string().optional(),
 });
 
 export const insightSchema = z.object({
   history: z.array(activitySchema),
   budget: z.number().positive(),
+  region: z.string().optional(),
 });

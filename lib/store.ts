@@ -2,6 +2,12 @@ import { create } from "zustand";
 import { Activity, Recommendation, Challenge } from "./types";
 import { toast } from "sonner";
 import { startOfDay, subDays, format } from "date-fns";
+import { DEFAULT_REGION } from "./emissions";
+
+function getStoredRegion(): string {
+  if (typeof window === "undefined") return DEFAULT_REGION;
+  return localStorage.getItem("CARBON_REGION") || DEFAULT_REGION;
+}
 
 interface AppState {
   activities: Activity[];
@@ -13,8 +19,10 @@ interface AppState {
   insight: string | null;
   isProcessing: boolean;
   dailyBudget: number;
+  region: string;
   addActivity: (activity: Activity) => void;
   setDailyBudget: (budget: number) => void;
+  setRegion: (region: string) => void;
   setRecommendations: (recs: Recommendation[]) => void;
   setInsight: (insight: string) => void;
   setIsProcessing: (status: boolean) => void;
@@ -88,8 +96,10 @@ export const useStore = create<AppState>((set) => ({
   insight: null,
   isProcessing: false,
   dailyBudget: 10,
+  region: getStoredRegion(),
 
   setDailyBudget: (budget: number) => set({ dailyBudget: budget }),
+  setRegion: (region: string) => set({ region }),
 
   addActivity: (activity) =>
     set((state) => {

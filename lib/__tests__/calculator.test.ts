@@ -51,4 +51,14 @@ describe("calculateActivityEmissions", () => {
     const result = calculateActivityEmissions("transport", "car", 0);
     expect(result.co2e).toBe(0);
   });
+
+  it("applies region modifier to energy emissions", () => {
+    const result = calculateActivityEmissions("energy", "grid_avg", 10, undefined, "india");
+    expect(result.co2e).toBeCloseTo(7.0, 10);
+  });
+
+  it("does not apply region modifier to transport", () => {
+    const result = calculateActivityEmissions("transport", "car", 10, undefined, "india");
+    expect(result.co2e).toBeCloseTo(1.7, 10);
+  });
 });

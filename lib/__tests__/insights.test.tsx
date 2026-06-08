@@ -8,6 +8,7 @@ const baseState = {
   budgetUsed: 0,
   isProcessing: false,
   dailyBudget: 10,
+  region: "global",
 };
 
 jest.mock("../../lib/store", () => ({

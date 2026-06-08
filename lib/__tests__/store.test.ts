@@ -30,6 +30,7 @@ describe("useStore", () => {
       ],
       insight: null,
       isProcessing: false,
+      region: "global",
     });
   });
 
@@ -102,5 +103,14 @@ describe("useStore", () => {
 
     useStore.getState().toggleChallenge(firstId);
     expect(useStore.getState().challenges[0].active).toBe(false);
+  });
+
+  it("starts with default global region", () => {
+    expect(useStore.getState().region).toBe("global");
+  });
+
+  it("sets region correctly", () => {
+    useStore.getState().setRegion("india");
+    expect(useStore.getState().region).toBe("india");
   });
 });

@@ -16,6 +16,7 @@ jest.mock("../../lib/store", () => ({
     setInsight: mockSetInsight,
     setIsProcessing: mockSetIsProcessing,
     isProcessing: mockIsProcessing,
+    region: "global",
   }),
 }));
 
@@ -85,7 +86,7 @@ describe("ActivityLog", () => {
         expect.objectContaining({
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ input: "drove 10km" }),
+          body: JSON.stringify({ input: "drove 10km", region: "global" }),
         }),
       );
     });

@@ -56,4 +56,16 @@ describe('calculateEmissions', () => {
   it('handles negative amounts (returns negative emissions)', () => {
     expect(calculateEmissions('transport', 'car', -10)).toBeCloseTo(-1.7, 10);
   });
+
+  it('applies regional grid modifier for energy', () => {
+    expect(calculateEmissions('energy', 'grid_avg', 10, 'india')).toBeCloseTo(7.0, 10);
+  });
+
+  it('uses default factor for unknown region', () => {
+    expect(calculateEmissions('energy', 'grid_avg', 10, 'unknown')).toBeCloseTo(4.0, 10);
+  });
+
+  it('does not apply region modifier to non-energy categories', () => {
+    expect(calculateEmissions('transport', 'car', 10, 'india')).toBeCloseTo(1.7, 10);
+  });
 });

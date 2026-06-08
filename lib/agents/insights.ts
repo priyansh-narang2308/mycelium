@@ -1,10 +1,12 @@
 import { GoogleGenAI } from "@google/genai";
 import { Activity } from "../types";
+import { getRegionLabel } from "../emissions";
 
 export async function generateInsight(
   history: Activity[],
   budget: number,
   apiKeyOverride?: string,
+  region?: string,
 ): Promise<string> {
   const ai = new GoogleGenAI({
     apiKey: apiKeyOverride || process.env.GEMINI_API_KEY,
@@ -13,9 +15,13 @@ export async function generateInsight(
   const todayEmissions = history.reduce((sum, a) => sum + a.co2e, 0);
   const percentage = Math.round((todayEmissions / budget) * 100);
 
+  const regionContext = region
+    ? `\nUser's Region: ${getRegionLabel(region)} — mention how their local context affects their footprint.`
+    : "";
+
   const prompt = `
 You are an encouraging, data-driven Climate Coach.
-The user has consumed ${percentage}% of their ${budget}kg daily carbon budget (${todayEmissions.toFixed(1)} kg CO2e used).
+The user has consumed ${percentage}% of their ${budget}kg daily carbon budget (${todayEmissions.toFixed(1)} kg CO2e used).${regionContext}
 
 Generate a single, powerful "aha" moment sentence.
 Rules:

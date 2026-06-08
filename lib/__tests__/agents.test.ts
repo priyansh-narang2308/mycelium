@@ -38,6 +38,15 @@ describe("parseNaturalLanguage", () => {
     const result = await parseNaturalLanguage("drove 10km");
     expect(result).toEqual({});
   });
+
+  it("includes region context in prompt", async () => {
+    mockGenerateContent.mockResolvedValue({
+      text: JSON.stringify({ category: "transport", subCategory: "car", amount: 10 }),
+    });
+    await parseNaturalLanguage("drove", undefined, "india");
+    const promptText = mockGenerateContent.mock.calls[0][0].contents;
+    expect(promptText).toContain("India");
+  });
 });
 
 describe("getRecommendations", () => {

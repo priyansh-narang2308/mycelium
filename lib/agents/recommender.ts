@@ -1,9 +1,11 @@
 import { GoogleGenAI } from "@google/genai";
 import { Activity, Recommendation } from "../types";
+import { getRegionLabel } from "../emissions";
 
 export async function getRecommendations(
   activities: Activity[],
   apiKeyOverride?: string,
+  region?: string,
 ): Promise<Recommendation[]> {
   if (activities.length === 0) return [];
 
@@ -15,9 +17,13 @@ export async function getRecommendations(
     .map((a) => `${a.amount}${a.unit} of ${a.subCategory} (${a.co2e}kg CO2)`)
     .join("\n");
 
+  const regionContext = region
+    ? `\nUser's Region: ${getRegionLabel(region)} — factor this into your recommendations (e.g., grid mix, transit availability, local food systems).`
+    : "";
+
   const prompt = `
 You are an expert Behavioral Psychologist and Environmental Scientist.
-Analyze the user's recent carbon-emitting activities and generate exactly 3 high-leverage lifestyle swaps.
+Analyze the user's recent carbon-emitting activities and generate exactly 3 high-leverage lifestyle swaps.${regionContext}
 
 Rules:
 1. Focus ONLY on their highest-emitting activities from the provided history.
@@ -31,8 +37,8 @@ Return ONLY a valid JSON array of objects with this exact structure, with no mar
     "id": "unique-string",
     "title": "Catchy, Action-Oriented Title",
     "description": "Specific, actionable steps to make the swap and why it works.",
-    "potentialSavings": 150, // estimated kg CO2e saved per year
-    "difficulty": "Easy" // "Easy", "Medium", or "Hard"
+    "potentialSavings": 150,
+    "difficulty": "Easy"
   }
 ]
 

@@ -14,6 +14,7 @@ jest.mock("../../lib/store", () => ({
     insight: null,
     isProcessing: false,
     dailyBudget: 10,
+    region: "global",
     loadSampleData: jest.fn(),
     toggleChallenge: jest.fn(),
   }),

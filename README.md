@@ -6,7 +6,7 @@
 
 ---
 
-## ✨ Features
+## Features
 
 | Feature                      | Description                                                                            |
 | ---------------------------- | -------------------------------------------------------------------------------------- |
@@ -22,7 +22,7 @@
 
 ---
 
-## 🏗 Architecture
+## Architecture
 
 ```
 User Input ("I drove 12km")
@@ -55,7 +55,7 @@ User Input ("I drove 12km")
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -91,7 +91,7 @@ npm run lint    # ESLint check
 
 ---
 
-## 🧪 Testing
+## Testing
 
 ```
 npm run test
@@ -107,7 +107,7 @@ npm run test
 
 ---
 
-## 📊 Evaluation Criteria Mapping
+## Evaluation Criteria Mapping
 
 | Criteria          | How We Address It                                                                                                                                |
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -119,7 +119,7 @@ npm run test
 
 ---
 
-## 🔑 PS Alignment
+## PS Alignment
 
 | PS Keyword                | Delivery                                                               |
 | ------------------------- | ---------------------------------------------------------------------- |
@@ -132,7 +132,7 @@ npm run test
 
 ---
 
-## 📝 Submission Notes
+## Submission Notes
 
 - **Platform**: Google Antigravity 2.0 (subagent architecture via SDK)
 - **Live Preview**: Run `npm run dev` and open http://localhost:3000

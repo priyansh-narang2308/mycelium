@@ -1,4 +1,5 @@
 import { GoogleGenAI } from "@google/genai";
+import { getRegionLabel } from "../emissions";
 
 export interface ParseResult {
   category?: string;
@@ -9,10 +10,16 @@ export interface ParseResult {
 export async function parseNaturalLanguage(
   input: string,
   apiKeyOverride?: string,
+  region?: string,
 ): Promise<ParseResult> {
   const ai = new GoogleGenAI({
     apiKey: apiKeyOverride || process.env.GEMINI_API_KEY,
   });
+
+  const regionContext = region
+    ? `User's Region: ${getRegionLabel(region)}`
+    : "";
+
   const prompt = `
 You are an expert NLP Parser for a Carbon Footprint tracker.
 Your task is to analyze the user's natural language input and extract the precise entity parameters.
@@ -23,6 +30,8 @@ Categories & Subcategories:
 - food: beef, chicken, pork, vegetables, rice
 - energy: grid_avg, solar
 - shopping: new_laptop, tshirt, jeans
+
+${regionContext}
 
 Rules:
 1. If the unit is missing, assume logical defaults (e.g., driving = km, food = kg).

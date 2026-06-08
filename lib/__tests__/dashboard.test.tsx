@@ -9,6 +9,7 @@ const baseState = {
   dailyFootprint: 0,
   budgetUsed: 0,
   dailyBudget: 10,
+  region: "global",
   weeklyTrend: [],
   recommendations: [],
   challenges: [

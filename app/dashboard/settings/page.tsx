@@ -1,13 +1,21 @@
 "use client";
-import { Settings2, Key, Database } from "lucide-react";
+import { Settings2, Key, Database, Globe } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useStore } from "../../../lib/store";
+import { REGION_GRID_FACTORS, DEFAULT_REGION } from "../../../lib/emissions";
+import type { JSX } from "react";
 
-export default function SettingsPage() {
+export default function SettingsPage(): JSX.Element {
   const setDailyBudget = useStore((s) => s.setDailyBudget);
+  const setRegion = useStore((s) => s.setRegion);
   const [apiKey, setApiKey] = useState("");
   const [budget, setBudget] = useState("10");
+  const [region, setRegionLocal] = useState(
+    typeof window !== "undefined"
+      ? localStorage.getItem("CARBON_REGION") || DEFAULT_REGION
+      : DEFAULT_REGION,
+  );
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,6 +27,8 @@ export default function SettingsPage() {
       localStorage.setItem("CARBON_BUDGET", budget);
       setDailyBudget(budgetNum);
     }
+    localStorage.setItem("CARBON_REGION", region);
+    setRegion(region);
     toast.success("Settings saved successfully!");
   };
 
@@ -54,6 +64,28 @@ export default function SettingsPage() {
                 onChange={(e) => setBudget(e.target.value)}
                 className="w-full max-w-md bg-surface-soft border border-hairline rounded-xl px-4 py-3 text-ink font-medium focus:outline-none focus:border-brand-teal transition-colors"
               />
+            </div>
+
+            <div>
+              <label className="block text-[15px] font-semibold text-ink mb-2">
+                <Globe className="w-4 h-4 inline mr-1.5 -mt-0.5" />
+                Region / Grid Context
+              </label>
+              <p className="text-[14px] text-muted font-medium mb-3">
+                Your local electricity grid mix affects your carbon footprint.
+                Select your region for personalized calculations.
+              </p>
+              <select
+                value={region}
+                onChange={(e) => setRegionLocal(e.target.value)}
+                className="w-full max-w-md bg-surface-soft border border-hairline rounded-xl px-4 py-3 text-ink font-medium focus:outline-none focus:border-brand-teal transition-colors"
+              >
+                {Object.entries(REGION_GRID_FACTORS).map(([key, { label }]) => (
+                  <option key={key} value={key}>
+                    {label}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
         </section>

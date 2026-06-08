@@ -12,6 +12,7 @@ export async function POST(req: Request) {
     const recommendations = await getRecommendations(
       validatedData.history,
       apiKeyOverride,
+      validatedData.region,
     );
     return NextResponse.json({ recommendations });
   } catch (error: unknown) {

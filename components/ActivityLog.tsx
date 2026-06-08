@@ -8,7 +8,7 @@ import { calculateActivityEmissions } from "../lib/agents/calculator";
 
 export function ActivityLog() {
   const [input, setInput] = useState("");
-  const { activities, addActivity, setRecommendations, setInsight, setIsProcessing, isProcessing } = useStore();
+  const { activities, addActivity, setRecommendations, setInsight, setIsProcessing, isProcessing, region } = useStore();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,7 +29,7 @@ export function ActivityLog() {
       const parseRes = await fetch("/api/parse", {
         method: "POST",
         headers,
-        body: JSON.stringify({ input: rawInput }),
+        body: JSON.stringify({ input: rawInput, region }),
       });
       if (!parseRes.ok) throw new Error("Failed to parse");
       const parsed = await parseRes.json();
@@ -39,7 +39,7 @@ export function ActivityLog() {
       }
 
       // 2. Synchronous UI Update
-      const newActivityData = calculateActivityEmissions(parsed.category, parsed.subCategory, parsed.amount, rawInput);
+      const newActivityData = calculateActivityEmissions(parsed.category, parsed.subCategory, parsed.amount, rawInput, region);
       const newActivity = {
         id: Date.now().toString(),
         timestamp: new Date().toISOString(),
@@ -55,7 +55,7 @@ export function ActivityLog() {
         fetch("/api/recommend", {
           method: "POST",
           headers,
-          body: JSON.stringify({ history: updatedHistory }),
+          body: JSON.stringify({ history: updatedHistory, region }),
         }).then(res => res.json()).then(data => {
           if (data.recommendations?.length) setRecommendations(data.recommendations);
         }).catch(console.error),
@@ -63,7 +63,7 @@ export function ActivityLog() {
         fetch("/api/insight", {
           method: "POST",
           headers,
-          body: JSON.stringify({ history: updatedHistory, budget }),
+          body: JSON.stringify({ history: updatedHistory, budget, region }),
         }).then(res => res.json()).then(data => {
           if (data.insight) setInsight(data.insight);
         }).catch(console.error)
