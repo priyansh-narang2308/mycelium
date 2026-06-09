@@ -1,7 +1,15 @@
-import { getAIClient } from "@/lib/agents/client";
+import { getAIClient, generateContentSafe } from "@/lib/agents/client";
 import { Activity } from "@/lib/types";
 import { getRegionLabel } from "@/lib/emissions";
+import { buildInsightPrompt } from "./prompts/insight.prompt";
 
+/**
+ * Generates a single-sentence "aha moment" insight based on user's daily carbon budget usage.
+ * @param history - Array of logged activities
+ * @param budget - Daily carbon budget in kg CO2e
+ * @param region - Optional region for context-aware insight
+ * @returns Encouraging insight sentence under 15 words
+ */
 export async function generateInsight(
   history: Activity[],
   budget: number,
@@ -16,25 +24,11 @@ export async function generateInsight(
     ? `\nUser's Region: ${getRegionLabel(region)} — mention how their local context affects their footprint.`
     : "";
 
-  const prompt = `
-You are an encouraging, data-driven Climate Coach.
-The user has consumed ${percentage}% of their ${budget}kg daily carbon budget (${todayEmissions.toFixed(1)} kg CO2e used).${regionContext}
-
-Generate a single, powerful "aha" moment sentence.
-Rules:
-1. Keep it under 15 words.
-2. If they are over budget, be encouraging and future-focused, not shameful.
-3. If they are under budget, praise their specific efficiency.
-4. Do NOT use markdown, emojis, or hashtags.
-  `;
+  const prompt = buildInsightPrompt(percentage, budget, todayEmissions, regionContext);
 
   try {
-    const response = await ai.models.generateContent({
-      model: "gemini-flash-latest",
-      contents: prompt,
-    });
-
-    return response.text || "";
+    const response = await generateContentSafe(ai, prompt);
+    return response || "";
   } catch {
     return "";
   }

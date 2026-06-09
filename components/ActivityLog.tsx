@@ -4,60 +4,7 @@ import { useStore } from "@/lib/store";
 import { motion } from "framer-motion";
 import { Terminal, Send } from "lucide-react";
 import { toast } from "sonner";
-import { calculateActivityEmissions } from "@/lib/agents/calculator";
-
-
-async function parseActivity(input: string, region: string, headers: Record<string, string>) {
-  const res = await fetch("/api/parse", {
-    method: "POST",
-    headers,
-    body: JSON.stringify({ input, region }),
-  });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.error || "Failed to parse input");
-  }
-  return res.json();
-}
-
-function buildActivity(rawInput: string, parsed: { category: string; subCategory: string; amount: number }, region: string) {
-  const data = calculateActivityEmissions(parsed.category, parsed.subCategory, parsed.amount, rawInput, region);
-  return { id: Date.now().toString(), timestamp: new Date().toISOString(), ...data };
-}
-
-async function fetchAIFeedback(
-  history: import("@/lib/types").Activity[],
-  region: string,
-  budget: number,
-  headers: Record<string, string>,
-  onRecommendations: (recs: import("@/lib/types").Recommendation[]) => void,
-  onInsight: (insight: string) => void,
-) {
-  try {
-    const [recRes, insRes] = await Promise.all([
-      fetch("/api/recommend", {
-        method: "POST",
-        headers,
-        body: JSON.stringify({ history, region }),
-      }),
-      fetch("/api/insight", {
-        method: "POST",
-        headers,
-        body: JSON.stringify({ history, budget, region }),
-      }),
-    ]);
-    if (recRes.ok) {
-      const data = await recRes.json();
-      if (data.recommendations?.length) onRecommendations(data.recommendations);
-    }
-    if (insRes.ok) {
-      const data = await insRes.json();
-      if (data.insight) onInsight(data.insight);
-    }
-  } catch {
-    // Background AI failures are non-critical
-  }
-}
+import { parseActivity, buildActivity, fetchAIFeedback } from "@/lib/services/activity-service";
 
 export function ActivityLog() {
   const [input, setInput] = useState("");
@@ -72,13 +19,12 @@ export function ActivityLog() {
     setInput("");
 
     try {
-      const headers = { "Content-Type": "application/json" };
-      const parsed = await parseActivity(rawInput, region, headers);
+      const parsed = await parseActivity(rawInput, region);
       const activity = buildActivity(rawInput, parsed, region);
       addActivity(activity);
 
       const updatedHistory = [...activities, activity];
-      fetchAIFeedback(updatedHistory, region, dailyBudget, headers, setRecommendations, setInsight);
+      fetchAIFeedback(updatedHistory, region, dailyBudget, setRecommendations, setInsight);
       toast.success("Activity logged and analyzed!");
     } catch {
       setInput(rawInput);

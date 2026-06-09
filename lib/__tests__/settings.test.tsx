@@ -12,9 +12,10 @@ const mockStore = {
 };
 
 jest.mock("../../lib/store", () => ({
-  useStore: jest.fn((selector?: (s: typeof mockStore) => unknown) => {
-    return selector ? selector(mockStore) : mockStore;
-  }),
+  useDailyBudget: () => mockStore.dailyBudget,
+  useRegion: () => mockStore.region,
+  useSetDailyBudget: () => mockSetDailyBudget,
+  useSetRegion: () => mockSetRegion,
 }));
 
 jest.mock("lucide-react", () => ({

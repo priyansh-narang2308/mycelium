@@ -57,10 +57,23 @@ export const REGION_GRID_FACTORS: Record<string, { label: string; factor: number
 
 export const DEFAULT_REGION = "global";
 
+/**
+ * Gets the grid carbon intensity factor for a region.
+ * @param region - Region identifier (e.g., "us-east", "france")
+ * @returns Multiplier relative to global average (0.4 kg CO2e/kWh)
+ */
 export function getRegionFactor(region: string): number {
   return REGION_GRID_FACTORS[region]?.factor ?? 1.0;
 }
 
+/**
+ * Calculates CO2e emissions for an activity using emission factors.
+ * @param category - Emission category (transport, food, energy, shopping)
+ * @param subCategory - Specific activity type within category
+ * @param amount - Quantity of the activity
+ * @param region - Optional region for grid-adjusted electricity calculations
+ * @returns Emissions in kg CO2e, or 0 if factor not found
+ */
 export function calculateEmissions(
   category: string,
   subCategory: string,
@@ -79,6 +92,11 @@ export function calculateEmissions(
   return adjusted;
 }
 
+/**
+ * Gets the human-readable label for a region.
+ * @param region - Region identifier
+ * @returns Display label for the region
+ */
 export function getRegionLabel(region: string): string {
   return REGION_GRID_FACTORS[region]?.label ?? "Global Average";
 }

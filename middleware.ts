@@ -1,22 +1,39 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const CLEANUP_INTERVAL = 3_600_000;
-interface RateLimitEntry { count: number; lastReset: number }
+const DEFAULT_LIMIT = 30;
+const DEFAULT_WINDOW_MS = 60_000;
+const CLEANUP_INTERVAL_MS = 600_000;
 
-function createRateLimiter(windowMs = 60_000, limit = 30) {
+interface RateLimitEntry {
+  count: number;
+  lastReset: number;
+}
+
+function createRateLimiter(
+  windowMs = DEFAULT_WINDOW_MS,
+  limit = DEFAULT_LIMIT,
+) {
   const rateLimitMap = new Map<string, RateLimitEntry>();
+  let cleanupInterval: ReturnType<typeof setInterval> | null = null;
 
-  const cleanup = setInterval(() => {
-    const cutoff = Date.now() - windowMs;
-    for (const [key, entry] of rateLimitMap) {
-      if (entry.lastReset < cutoff) rateLimitMap.delete(key);
-    }
-  }, CLEANUP_INTERVAL);
+  const ensureCleanup = () => {
+    if (cleanupInterval !== null) return;
+    if (typeof process !== "undefined" && process.env.NODE_ENV === "test") return;
 
-  if (cleanup.unref) cleanup.unref();
+    cleanupInterval = setInterval(() => {
+      const cutoff = Date.now() - windowMs;
+      for (const [key, entry] of rateLimitMap) {
+        if (entry.lastReset < cutoff) rateLimitMap.delete(key);
+      }
+    }, CLEANUP_INTERVAL_MS);
+
+    if (cleanupInterval.unref) cleanupInterval.unref();
+  };
 
   return function rateLimitHandler(req: NextRequest): Response {
+    ensureCleanup();
+
     if (!req.nextUrl.pathname.startsWith("/api/")) return NextResponse.next();
 
     const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "127.0.0.1";
@@ -47,7 +64,7 @@ function createRateLimiter(windowMs = 60_000, limit = 30) {
 
 const rateLimitHandler = createRateLimiter();
 
-export function proxy(req: NextRequest) {
+export function middleware(req: NextRequest) {
   return rateLimitHandler(req);
 }
 

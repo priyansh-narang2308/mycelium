@@ -48,16 +48,40 @@ const mockStoreState = {
   isProcessing: false,
   dailyBudget: 10,
   region: "global",
+  addActivity: jest.fn(),
   loadSampleData: jest.fn(),
   toggleChallenge: jest.fn(),
   setDailyBudget: jest.fn(),
   setRegion: jest.fn(),
+  setRecommendations: jest.fn(),
+  setInsight: jest.fn(),
+  setIsProcessing: jest.fn(),
+  clearActivities: jest.fn(),
 };
 
 jest.mock("../../lib/store", () => ({
   useStore: jest.fn((selector?: (s: typeof mockStoreState) => unknown) => {
     return selector ? selector(mockStoreState) : mockStoreState;
   }),
+  useDailyBudget: () => mockStoreState.dailyBudget,
+  useRegion: () => mockStoreState.region,
+  useSetDailyBudget: () => mockStoreState.setDailyBudget,
+  useSetRegion: () => mockStoreState.setRegion,
+  useActivities: () => mockStoreState.activities,
+  useDailyFootprint: () => mockStoreState.dailyFootprint,
+  useBudgetUsed: () => mockStoreState.budgetUsed,
+  useWeeklyTrend: () => mockStoreState.weeklyTrend,
+  useRecommendations: () => mockStoreState.recommendations,
+  useChallenges: () => mockStoreState.challenges,
+  useInsight: () => mockStoreState.insight,
+  useIsProcessing: () => mockStoreState.isProcessing,
+  useAddActivity: () => mockStoreState.addActivity,
+  useSetRecommendations: () => mockStoreState.setRecommendations,
+  useSetInsight: () => mockStoreState.setInsight,
+  useSetIsProcessing: () => mockStoreState.setIsProcessing,
+  useToggleChallenge: () => mockStoreState.toggleChallenge,
+  useLoadSampleData: () => mockStoreState.loadSampleData,
+  useClearActivities: () => mockStoreState.clearActivities,
 }));
 
 jest.mock("next/font/google", () => ({

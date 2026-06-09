@@ -1,4 +1,4 @@
-import { proxy } from "../../proxy";
+import { middleware as proxy } from "@/middleware";
 import { NextRequest } from "next/server";
 
 interface MockedResponse {
