@@ -1,4 +1,4 @@
-import { CACHE_CLEANUP_INTERVAL_MS, CACHE_TTL_MS } from "@/lib/constants";
+import { CACHE_CLEANUP_INTERVAL_MS, CACHE_TTL_MS } from "@/lib/constants/cache";
 
 export class AICache<T = unknown> {
   private cache = new Map<string, { value: T; timestamp: number }>();

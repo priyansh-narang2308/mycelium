@@ -6,8 +6,12 @@ interface AIHandlerOptions<TInput, TOutput> {
   schema: z.ZodSchema<TInput>;
   cachePrefix: string;
   cacheKeyFn: (input: TInput) => Record<string, unknown>;
-  handler: (input: TInput, apiKey?: string) => Promise<TOutput | null | undefined>;
+  handler: (
+    input: TInput,
+    apiKey?: string,
+  ) => Promise<TOutput | null | undefined>;
   responseFn: (output: TOutput | null | undefined) => Record<string, unknown>;
+  fallbackHandler?: (input: TInput) => TOutput | null | undefined;
 }
 
 export function createAIRoute<TInput, TOutput>(
@@ -28,7 +32,14 @@ export function createAIRoute<TInput, TOutput>(
         return NextResponse.json(options.responseFn(cached));
       }
 
-      const output = await options.handler(validatedInput, apiKeyOverride);
+      let output: TOutput | null | undefined = await options.handler(validatedInput, apiKeyOverride);
+
+      if (
+        (output === null || output === undefined || output === "") &&
+        options.fallbackHandler
+      ) {
+        output = options.fallbackHandler(validatedInput);
+      }
 
       if (output !== null && output !== undefined && output !== "") {
         aiCache.set(cacheKey, output);

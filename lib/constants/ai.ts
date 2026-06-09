@@ -1,0 +1,4 @@
+export const AI_MAX_HISTORY_ACTIVITIES = 30;
+export const AI_CHAT_MAX_WORDS = 150;
+export const AI_CHAT_MAX_MESSAGE_LENGTH = 2000;
+export const PARSE_INPUT_MAX_LENGTH = 500;

@@ -16,7 +16,7 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   setDailyBudget: (budget: number) =>
     set(() => {
       setBudget(budget);
-      useActivityStore.getState().recalculate(budget);
+      useActivityStore.getState().setDailyBudget(budget);
       return { dailyBudget: budget };
     }),
 

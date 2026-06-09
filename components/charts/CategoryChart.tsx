@@ -31,7 +31,7 @@ export function CategoryChart({ data }: Props) {
   return (
     <div className="mt-6">
       <div className="h-[180px] w-full" role="img" aria-label="Category breakdown chart">
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
           <PieChart>
             <Pie
               data={data}

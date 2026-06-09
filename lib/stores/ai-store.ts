@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import type { Recommendation, Challenge } from "@/lib/types";
-import { CHALLENGES } from "@/lib/constants";
+import { CHALLENGES } from "@/lib/constants/challenges";
 
 interface AIState {
   recommendations: Recommendation[];

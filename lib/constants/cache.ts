@@ -1,0 +1,2 @@
+export const CACHE_TTL_MS = 3_600_000;
+export const CACHE_CLEANUP_INTERVAL_MS = 600_000;

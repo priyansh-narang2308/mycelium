@@ -1,6 +1,6 @@
 import { Activity } from "@/lib/types";
 import { DEFAULT_REGION } from "@/lib/emissions";
-import { STORAGE_KEYS, DEFAULTS } from "@/lib/constants";
+import { STORAGE_KEYS, DEFAULTS } from "@/lib/constants/storage";
 
 export function getRegion(): string {
   if (typeof window === "undefined") return DEFAULT_REGION;

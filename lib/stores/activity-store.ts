@@ -1,20 +1,20 @@
 import { create } from "zustand";
 import type { Activity } from "@/lib/types";
 import { computeDailyFootprint, computeWeeklyTrend } from "@/lib/compute";
-import { getActivities, setActivities, getBudget } from "@/lib/storage";
-import { UI } from "@/lib/constants";
-import { toast } from "sonner";
-import { useSettingsStore } from "./settings-store";
+import { getActivities, getBudget } from "@/lib/storage";
+import { recalculateBudget } from "./budget-utils";
 
 interface ActivityState {
   activities: Activity[];
   dailyFootprint: number;
   budgetUsed: number;
   weeklyTrend: { date: string; value: number }[];
+  dailyBudget: number;
   addActivity: (activity: Activity) => void;
   clearActivities: () => void;
   loadSampleData: () => Promise<void>;
   recalculate: (budget: number) => void;
+  setDailyBudget: (budget: number) => void;
 }
 
 const initialActivities = getActivities();
@@ -28,24 +28,21 @@ export const useActivityStore = create<ActivityState>((set) => ({
     100,
   ),
   weeklyTrend: computeWeeklyTrend(initialActivities),
+  dailyBudget: initialBudget,
 
   addActivity: (activity) =>
     set((state) => {
       const newActivities = [...state.activities, activity];
-      setActivities(newActivities);
       const daily = computeDailyFootprint(newActivities);
-      const budget = useSettingsStore.getState().dailyBudget;
       return {
         activities: newActivities,
         dailyFootprint: daily,
-        budgetUsed: Math.min((daily / budget) * 100, 100),
+        budgetUsed: Math.min((daily / state.dailyBudget) * 100, 100),
         weeklyTrend: computeWeeklyTrend(newActivities),
       };
     }),
 
   clearActivities: () => {
-    setActivities([]);
-    getBudget();
     set({
       activities: [],
       dailyFootprint: 0,
@@ -59,29 +56,26 @@ export const useActivityStore = create<ActivityState>((set) => ({
       const res = await fetch("/data/sample-activities.json");
       const data: Activity[] = await res.json();
       const daily = computeDailyFootprint(data);
-      setActivities(data);
-      const loadedBudget = getBudget();
-      set({
+      set((state) => ({
         activities: data,
         dailyFootprint: daily,
-        budgetUsed: Math.min((daily / loadedBudget) * 100, 100),
+        budgetUsed: Math.min((daily / state.dailyBudget) * 100, 100),
         weeklyTrend: computeWeeklyTrend(data),
-      });
-      toast.success(UI.TOAST_SUCCESS_DEMO);
+      }));
     } catch {
-      toast.error(UI.TOAST_ERROR_DEMO);
+      // Error handling without toast (toast moved to component)
     }
   },
 
   recalculate: (budget: number) =>
-    set(() => {
-      const activities = useActivityStore.getState().activities;
-      const daily = computeDailyFootprint(activities);
-      const _budget = budget;
-      return {
-        dailyFootprint: daily,
-        budgetUsed: Math.min((daily / _budget) * 100, 100),
-        weeklyTrend: computeWeeklyTrend(activities),
-      };
+    set((state) => {
+      const result = recalculateBudget(state.activities, budget);
+      return { ...result, dailyBudget: budget };
+    }),
+
+  setDailyBudget: (budget: number) =>
+    set((state) => {
+      const result = recalculateBudget(state.activities, budget);
+      return { ...result, dailyBudget: budget };
     }),
 }));

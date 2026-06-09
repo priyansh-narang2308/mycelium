@@ -23,7 +23,7 @@ export function WeeklyTrend({ weeklyTrend }: Props) {
         Understand: Weekly Footprint Trends
       </h3>
       <div className="h-[200px]" role="img" aria-label="7-day carbon emission trend">
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
           <BarChart data={weeklyTrend}>
             <XAxis dataKey="date" tick={{ fontSize: 12, fill: "#6a6a6a" }} />
             <YAxis hide />
