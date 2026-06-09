@@ -11,10 +11,9 @@ export interface ParseResult {
 
 export async function parseNaturalLanguage(
   input: string,
-  apiKeyOverride?: string,
   region?: string,
 ): Promise<ParseResult> {
-  const ai = getAIClient(apiKeyOverride);
+  const ai = getAIClient();
 
   const regionContext = region
     ? `User's Region: ${getRegionLabel(region)}`

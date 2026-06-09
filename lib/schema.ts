@@ -41,3 +41,8 @@ export const recommendationSchema = z.object({
   potentialSavings: z.number().nonnegative().max(10000),
   difficulty: z.enum(["Easy", "Medium", "Hard"]),
 });
+
+export const chatSchema = z.object({
+  message: z.string().min(1).max(2000),
+  history: z.array(activitySchema),
+});

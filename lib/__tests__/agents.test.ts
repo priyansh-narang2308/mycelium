@@ -43,7 +43,7 @@ describe("parseNaturalLanguage", () => {
     mockGenerateContent.mockResolvedValue({
       text: JSON.stringify({ category: "transport", subCategory: "car", amount: 10 }),
     });
-    await parseNaturalLanguage("drove", undefined, "india");
+    await parseNaturalLanguage("drove", "india");
     const promptText = mockGenerateContent.mock.calls[0][0].contents;
     expect(promptText).toContain("India");
   });

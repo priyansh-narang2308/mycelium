@@ -8,7 +8,7 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
     const validatedData = recommendSchema.parse(body);
-    const apiKeyOverride = req.headers.get("x-api-key") || undefined;
+
 
     const cacheKey = aiCache.generateKey("rec", { history: validatedData.history, region: validatedData.region });
     const cached = aiCache.get(cacheKey);
@@ -16,7 +16,6 @@ export async function POST(req: Request) {
 
     const recommendations = await getRecommendations(
       validatedData.history,
-      apiKeyOverride,
       validatedData.region,
     );
     

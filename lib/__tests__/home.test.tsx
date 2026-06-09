@@ -14,17 +14,19 @@ jest.mock("lucide-react", () => ({
   Zap: () => <span>Zap</span>,
   TrendingDown: () => <span>TrendingDown</span>,
   BarChart3: () => <span>BarChart3</span>,
+  Shield: () => <span>Shield</span>,
+  BookOpen: () => <span>BookOpen</span>,
 }));
 
 describe("Home landing page", () => {
   it("renders the headline", () => {
     render(<Home />);
-    expect(screen.getByText(/Understand, track, and/)).toBeInTheDocument();
+    expect(screen.getByText(/Understand your footprint/)).toBeInTheDocument();
   });
 
   it("renders the tagline", () => {
     render(<Home />);
-    expect(screen.getByText(/CarbonKeeper is your personal carbon coach/)).toBeInTheDocument();
+    expect(screen.getByText(/turns your everyday choices/)).toBeInTheDocument();
   });
 
   it("renders CTA button linking to dashboard", () => {
@@ -42,6 +44,18 @@ describe("Home landing page", () => {
     expect(screen.getByText("Personalized Insights")).toBeInTheDocument();
   });
 
+  it("renders privacy badge", () => {
+    render(<Home />);
+    expect(screen.getByText(/Computed locally, in your browser/)).toBeInTheDocument();
+  });
+
+  it("renders methodology link", () => {
+    render(<Home />);
+    const link = screen.getByText("View methodology");
+    expect(link).toBeInTheDocument();
+    expect(link.closest("a")).toHaveAttribute("href", "/methodology");
+  });
+
   it("renders bottom CTA section", () => {
     render(<Home />);
     expect(screen.getByText("Ready to reduce your footprint?")).toBeInTheDocument();
@@ -57,5 +71,11 @@ describe("Home landing page", () => {
   it("renders footer", () => {
     render(<Home />);
     expect(screen.getByText(/Built for individuals, not corporations/)).toBeInTheDocument();
+  });
+
+  it("renders footer methodology link", () => {
+    render(<Home />);
+    const links = screen.getAllByText("Methodology & Sources");
+    expect(links.length).toBeGreaterThanOrEqual(1);
   });
 });

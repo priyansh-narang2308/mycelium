@@ -8,11 +8,10 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
     const validatedData = parseInputSchema.parse(body);
-    const apiKeyOverride = req.headers.get("x-api-key") || undefined;
+
 
     const parsed = await parseNaturalLanguage(
       validatedData.input,
-      apiKeyOverride,
       validatedData.region,
     );
 

@@ -1,5 +1,12 @@
 import Link from "next/link";
-import { Target, Zap, TrendingDown, BarChart3 } from "lucide-react";
+import {
+  Target,
+  Zap,
+  TrendingDown,
+  BarChart3,
+  Shield,
+  BookOpen,
+} from "lucide-react";
 
 export default function Home() {
   return (
@@ -8,13 +15,27 @@ export default function Home() {
         <header className="flex flex-col md:flex-row items-center justify-between gap-12">
           <div className="md:w-7/12 text-center md:text-left">
             <h1 className="text-[56px] md:text-[80px] font-medium text-ink tracking-[-2.5px] leading-none mb-6">
-              Understand, track, and
+              Understand your footprint.
               <br />
-              reduce your CO₂.
+              Then actually shrink it.
             </h1>
-            <p className="text-[18px] md:text-[20px] text-muted max-w-xl leading-relaxed mb-10 font-medium mx-auto md:mx-0">
-              CarbonKeeper is your personal carbon coach. Log what you did in plain English, get instant emission calculations, and receive personalized reduction plans tailored to your habits.
+            <p className="text-[18px] md:text-[20px] text-muted max-w-xl leading-relaxed mb-6 font-medium mx-auto md:mx-0">
+              CarbonKeeper turns your everyday choices into a clear, measured
+              picture — and gives you specific, data-grounded ways to do better.
             </p>
+            <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mb-8">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-soft text-[13px] font-semibold text-muted border border-hairline">
+                <Shield className="w-3.5 h-3.5" aria-hidden="true" />
+                Computed locally, in your browser
+              </span>
+              <Link
+                href="/methodology"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-soft text-[13px] font-semibold text-muted border border-hairline hover:bg-hairline transition-colors"
+              >
+                <BookOpen className="w-3.5 h-3.5" aria-hidden="true" />
+                View methodology
+              </Link>
+            </div>
             <div className="flex items-center justify-center md:justify-start gap-4">
               <Link
                 href="/dashboard"
@@ -26,7 +47,10 @@ export default function Home() {
           </div>
           <div className="md:w-5/12 flex justify-center md:flex relative">
             <div className="w-[400px] h-[400px] bg-brand-teal rounded-[48px] transform rotate-3 flex items-center justify-center shadow-xl border border-ink/5">
-              <TrendingDown className="w-40 h-40 text-brand-mint opacity-90" aria-hidden="true" />
+              <TrendingDown
+                className="w-40 h-40 text-brand-mint opacity-90"
+                aria-hidden="true"
+              />
             </div>
           </div>
         </header>
@@ -39,7 +63,8 @@ export default function Home() {
               Four pillars. One goal.
             </h2>
             <p className="text-[18px] text-muted max-w-2xl mx-auto font-medium">
-              We help you understand your impact, track your habits, reduce your footprint, and discover what works for you.
+              Understand your impact. Track your habits. Reduce your footprint.
+              Get insights that actually help.
             </p>
           </div>
 
@@ -48,9 +73,12 @@ export default function Home() {
               <div className="w-16 h-16 bg-brand-lavender text-ink flex items-center justify-center rounded-2xl mx-auto mb-6">
                 <BarChart3 className="w-8 h-8" aria-hidden="true" />
               </div>
-              <h3 className="text-[20px] font-semibold text-ink mb-3">Understand</h3>
+              <h3 className="text-[20px] font-semibold text-ink mb-3">
+                Understand
+              </h3>
               <p className="text-muted font-medium text-[15px] leading-relaxed">
-                See exactly how much CO₂ each activity generates, with relatable equivalents and category breakdowns.
+                See exactly how much CO₂ each activity generates — with
+                relatable equivalents and transparent methodology.
               </p>
             </div>
 
@@ -60,7 +88,8 @@ export default function Home() {
               </div>
               <h3 className="text-[20px] font-semibold text-ink mb-3">Track</h3>
               <p className="text-muted font-medium text-[15px] leading-relaxed">
-                Type &ldquo;I drove 20km&rdquo; and we log it instantly. No forms, no dropdowns. Daily budget meter and weekly trends keep you on track.
+                Type &ldquo;I drove 20km&rdquo; and we log it instantly. No
+                forms, no dropdowns. All computation stays in your browser.
               </p>
             </div>
 
@@ -68,9 +97,12 @@ export default function Home() {
               <div className="w-16 h-16 bg-brand-peach text-ink flex items-center justify-center rounded-2xl mx-auto mb-6">
                 <TrendingDown className="w-8 h-8" aria-hidden="true" />
               </div>
-              <h3 className="text-[20px] font-semibold text-ink mb-3">Reduce</h3>
+              <h3 className="text-[20px] font-semibold text-ink mb-3">
+                Reduce
+              </h3>
               <p className="text-muted font-medium text-[15px] leading-relaxed">
-                AI recommends specific, actionable swaps based on your actual habits. Gamified challenges build lasting change.
+                AI recommends specific, actionable swaps based on your actual
+                habits. The AI narrates; it never fabricates figures.
               </p>
             </div>
 
@@ -78,9 +110,12 @@ export default function Home() {
               <div className="w-16 h-16 bg-brand-mint text-ink flex items-center justify-center rounded-2xl mx-auto mb-6">
                 <Zap className="w-8 h-8" aria-hidden="true" />
               </div>
-              <h3 className="text-[20px] font-semibold text-ink mb-3">Personalized Insights</h3>
+              <h3 className="text-[20px] font-semibold text-ink mb-3">
+                Personalized Insights
+              </h3>
               <p className="text-muted font-medium text-[15px] leading-relaxed">
-                Gemini generates tailored insights from your activity history. Every recommendation is unique to your lifestyle.
+                Ask your AI Assistant anything about your data. Get answers
+                grounded in your real logged activities.
               </p>
             </div>
           </div>
@@ -93,8 +128,9 @@ export default function Home() {
             <h2 className="text-[40px] md:text-[56px] font-medium text-white tracking-[-1.5px] leading-tight mb-6">
               Ready to reduce your footprint?
             </h2>
-            <p className="text-[18px] text-white/80 max-w-xl mx-auto font-medium mb-10">
-              Join thousands reducing their carbon impact, one simple choice at a time.
+            <p className="text-[18px] text-white/80 max-w-xl mx-auto font-medium mb-6">
+              No sign-up required. No data uploaded. Everything runs locally in
+              your browser.
             </p>
             <Link
               href="/dashboard"
@@ -107,10 +143,19 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="w-full border-t border-hairline py-8 px-6 text-center">
-        <p className="text-sm text-muted font-medium">
-          &copy; {new Date().getFullYear()} CarbonKeeper. Built for individuals, not corporations.
-        </p>
+      <footer className="w-full border-t border-hairline py-8 px-6">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+          <p className="text-sm text-muted font-medium">
+            &copy; {new Date().getFullYear()} CarbonKeeper. Built for
+            individuals, not corporations.
+          </p>
+          <Link
+            href="/methodology"
+            className="text-sm font-semibold text-muted hover:text-ink transition-colors"
+          >
+            Methodology &amp; Sources
+          </Link>
+        </div>
       </footer>
     </main>
   );

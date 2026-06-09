@@ -1,8 +1,8 @@
 import { GoogleGenAI } from "@google/genai";
 
-export const getAIClient = (apiKeyOverride?: string) => {
+export const getAIClient = () => {
   return new GoogleGenAI({
-    apiKey: apiKeyOverride || process.env.GEMINI_API_KEY,
+    apiKey: process.env.GEMINI_API_KEY,
   });
 };
 

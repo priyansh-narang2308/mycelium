@@ -26,6 +26,7 @@ jest.mock("lucide-react", () => ({
   Home: () => <span>HomeIcon</span>,
   List: () => <span>ListIcon</span>,
   BarChart2: () => <span>BarChart2Icon</span>,
+  MessageCircle: () => <span>MessageCircleIcon</span>,
   Settings: () => <span>SettingsIcon</span>,
   Menu: () => <span>MenuIcon</span>,
   X: () => <span>XIcon</span>,
@@ -41,6 +42,7 @@ describe("DashboardLayout", () => {
     expect(screen.getByText("Track Activities")).toBeInTheDocument();
     expect(screen.getByText("Understand Logs")).toBeInTheDocument();
     expect(screen.getByText("Reduce Carbon")).toBeInTheDocument();
+    expect(screen.getByText("AI Assistant")).toBeInTheDocument();
     expect(screen.getByText("Settings")).toBeInTheDocument();
   });
 

@@ -6,14 +6,6 @@ import { Terminal, Send } from "lucide-react";
 import { toast } from "sonner";
 import { calculateActivityEmissions } from "@/lib/agents/calculator";
 
-function getApiHeaders(): Record<string, string> {
-  const headers: Record<string, string> = { "Content-Type": "application/json" };
-  if (typeof window !== "undefined") {
-    const key = localStorage.getItem("GEMINI_API_KEY");
-    if (key) headers["x-api-key"] = key;
-  }
-  return headers;
-}
 
 async function parseActivity(input: string, region: string, headers: Record<string, string>) {
   const res = await fetch("/api/parse", {
@@ -80,7 +72,7 @@ export function ActivityLog() {
     setInput("");
 
     try {
-      const headers = getApiHeaders();
+      const headers = { "Content-Type": "application/json" };
       const parsed = await parseActivity(rawInput, region, headers);
       const activity = buildActivity(rawInput, parsed, region);
       addActivity(activity);

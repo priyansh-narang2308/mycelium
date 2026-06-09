@@ -8,7 +8,7 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
     const validatedData = insightSchema.parse(body);
-    const apiKeyOverride = req.headers.get("x-api-key") || undefined;
+
 
     const cacheKey = aiCache.generateKey("ins", {
       history: validatedData.history,
@@ -21,7 +21,6 @@ export async function POST(req: Request) {
     const insight = await generateInsight(
       validatedData.history,
       validatedData.budget,
-      apiKeyOverride,
       validatedData.region,
     );
 

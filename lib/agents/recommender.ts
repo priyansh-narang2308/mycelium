@@ -9,12 +9,11 @@ const recommendationArraySchema = z.array(recommendationSchema);
 
 export async function getRecommendations(
   activities: Activity[],
-  apiKeyOverride?: string,
   region?: string,
 ): Promise<Recommendation[]> {
   if (activities.length === 0) return [];
 
-  const ai = getAIClient(apiKeyOverride);
+  const ai = getAIClient();
 
   const recentActivities = activities.slice(-30);
   const activitiesContext = recentActivities

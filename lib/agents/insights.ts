@@ -5,10 +5,9 @@ import { getRegionLabel } from "@/lib/emissions";
 export async function generateInsight(
   history: Activity[],
   budget: number,
-  apiKeyOverride?: string,
   region?: string,
 ): Promise<string> {
-  const ai = getAIClient(apiKeyOverride);
+  const ai = getAIClient();
 
   const todayEmissions = history.reduce((sum, a) => sum + a.co2e, 0);
   const percentage = Math.round((todayEmissions / budget) * 100);

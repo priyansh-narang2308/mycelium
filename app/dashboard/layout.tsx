@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, List, BarChart2, Settings, Menu, X } from "lucide-react";
+import { Home, List, BarChart2, Settings, Menu, X, MessageCircle } from "lucide-react";
 
 export default function DashboardLayout({
   children,
@@ -16,6 +16,7 @@ export default function DashboardLayout({
     { href: "/dashboard", icon: Home, label: "Track Activities" },
     { href: "/dashboard/logs", icon: List, label: "Understand Logs" },
     { href: "/dashboard/insights", icon: BarChart2, label: "Reduce Carbon" },
+    { href: "/dashboard/assistant", icon: MessageCircle, label: "AI Assistant" },
   ];
 
   return (
