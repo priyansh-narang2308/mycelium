@@ -1,7 +1,3 @@
-/**
- * CO2 equivalence thresholds for human-readable comparisons.
- * Each entry defines a threshold and its representative equivalent.
- */
 export const CO2_EQUIVALENTS = [
   { threshold: 0.01, text: "charging a smartphone", value: 0.008 },
   { threshold: 0.5, text: "boiling a kettle", value: 0.015 },
@@ -11,11 +7,6 @@ export const CO2_EQUIVALENTS = [
   { threshold: 200.0, text: "a flight from NY to LA", value: 150.0 },
 ];
 
-/**
- * Converts kg CO2e to a human-readable equivalence string.
- * @param kgCO2 - Emissions in kg CO2e
- * @returns Formatted string like "= 2.5x boiling a kettle"
- */
 export function getEquivalent(kgCO2: number): string {
   if (kgCO2 <= 0) return "Zero emissions!";
   

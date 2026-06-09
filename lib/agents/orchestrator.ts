@@ -9,14 +9,6 @@ export interface ParseResult {
   amount?: number;
 }
 
-
-/**
- * Parses natural language input into structured activity data using AI.
- * Falls back to keyword-based parsing if AI fails or returns invalid data.
- * @param input - User's natural language description (e.g., "drove 10km")
- * @param region - Optional region for context-aware parsing
- * @returns Parsed activity with category, subCategory, and amount
- */
 export async function parseNaturalLanguage(
   input: string,
   region?: string,

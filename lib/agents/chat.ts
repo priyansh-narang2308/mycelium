@@ -1,13 +1,6 @@
 import { getAIClient } from "@/lib/agents/client";
 import type { Activity } from "@/lib/types";
 
-/**
- * Generates a chat response from the AI Climate Assistant based on user's message and activity history.
- * @param message - The user's question about their carbon footprint
- * @param history - Array of logged activities to provide context
- * @param apiKeyOverride - Optional API key override for testing
- * @returns AI-generated response string
- */
 export async function generateChatResponse(
   message: string,
   history: Activity[],

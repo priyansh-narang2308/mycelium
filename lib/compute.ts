@@ -1,11 +1,6 @@
 import { startOfDay, subDays, format } from "date-fns";
 import type { Activity } from "@/lib/types";
 
-/**
- * Computes the weekly emissions trend for the last 7 days.
- * @param activities - Array of logged activities
- * @returns Array of { date, value } for each day (Mon-Sun)
- */
 export function computeWeeklyTrend(activities: Activity[]) {
   const today = startOfDay(new Date());
   const buckets: Record<string, number> = {};
@@ -24,11 +19,6 @@ export function computeWeeklyTrend(activities: Activity[]) {
   return Object.entries(buckets).map(([date, value]) => ({ date, value }));
 }
 
-/**
- * Computes today's total carbon footprint from logged activities.
- * @param activities - Array of logged activities
- * @returns Total emissions in kg CO2e for today
- */
 export function computeDailyFootprint(activities: Activity[]) {
   const today = startOfDay(new Date());
   return activities

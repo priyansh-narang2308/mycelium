@@ -1,10 +1,5 @@
 import { CACHE_CLEANUP_INTERVAL_MS, CACHE_TTL_MS } from "@/lib/constants";
 
-/**
- * In-memory TTL cache for AI responses with periodic cleanup.
- * Uses lazy initialization to avoid module-level side effects.
- * @template T - Type of cached values
- */
 export class AICache<T = unknown> {
   private cache = new Map<string, { value: T; timestamp: number }>();
   private readonly TTL_MS: number;
@@ -16,9 +11,13 @@ export class AICache<T = unknown> {
 
   private ensureCleanup(): void {
     if (this.cleanupInterval !== null) return;
-    if (typeof process !== "undefined" && process.env.NODE_ENV === "test") return;
+    if (typeof process !== "undefined" && process.env.NODE_ENV === "test")
+      return;
 
-    this.cleanupInterval = setInterval(() => this.evictStale(), CACHE_CLEANUP_INTERVAL_MS);
+    this.cleanupInterval = setInterval(
+      () => this.evictStale(),
+      CACHE_CLEANUP_INTERVAL_MS,
+    );
     if (this.cleanupInterval.unref) this.cleanupInterval.unref();
   }
 

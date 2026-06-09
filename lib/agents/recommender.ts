@@ -7,13 +7,6 @@ import { buildRecommendPrompt } from "./prompts/recommend.prompt";
 
 const recommendationArraySchema = z.array(recommendationSchema);
 
-
-/**
- * Generates personalized carbon reduction recommendations based on user's activity history.
- * @param activities - Array of logged activities (most recent 30 used)
- * @param region - Optional region for grid-specific recommendations
- * @returns Array of up to 3 high-leverage lifestyle swap recommendations
- */
 export async function getRecommendations(
   activities: Activity[],
   region?: string,

@@ -54,7 +54,6 @@ export async function fetchAIFeedback(
       if (data.insight) onInsight(data.insight);
     }
   } catch {
-    // Background AI failures are non-critical
   }
 }
 
