@@ -1,9 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-
-const DEFAULT_LIMIT = 30;
-const DEFAULT_WINDOW_MS = 60_000;
-const CLEANUP_INTERVAL_MS = 600_000;
+import { DEFAULT_LIMIT, DEFAULT_WINDOW_MS, CLEANUP_INTERVAL_MS } from "@/lib/constants/rate-limiter";
 
 interface RateLimitEntry {
   count: number;
@@ -19,8 +16,7 @@ function createRateLimiter(
 
   const ensureCleanup = () => {
     if (cleanupInterval !== null) return;
-    if (typeof process !== "undefined" && process.env.NODE_ENV === "test")
-      return;
+    if (typeof process !== "undefined" && process.env.NODE_ENV === "test") return;
 
     cleanupInterval = setInterval(() => {
       const cutoff = Date.now() - windowMs;
@@ -37,8 +33,7 @@ function createRateLimiter(
 
     if (!req.nextUrl.pathname.startsWith("/api/")) return NextResponse.next();
 
-    const ip =
-      req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "127.0.0.1";
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "127.0.0.1";
     const now = Date.now();
 
     const record = rateLimitMap.get(ip);
@@ -51,10 +46,7 @@ function createRateLimiter(
 
     record.count++;
     const res = NextResponse.next();
-    res.headers.set(
-      "X-RateLimit-Remaining",
-      String(Math.max(0, limit - record.count)),
-    );
+    res.headers.set("X-RateLimit-Remaining", String(Math.max(0, limit - record.count)));
 
     if (record.count > limit) {
       return new NextResponse(JSON.stringify({ error: "Too Many Requests" }), {
