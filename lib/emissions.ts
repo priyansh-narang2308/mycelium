@@ -57,6 +57,15 @@ export const REGION_GRID_FACTORS: Record<string, { label: string; factor: number
 
 export const DEFAULT_REGION = "global";
 
+export const GRID_AVERAGE_KG_PER_KWH = 0.4;
+
+export const EMISSION_FACTOR_SOURCE = {
+  TRANSPORT: "UK DEFRA 2024",
+  FOOD: "Poore & Nemecek 2018",
+  ENERGY: "UK DEFRA 2024",
+  SHOPPING: "UK DEFRA 2024",
+} as const;
+
 /**
  * Gets the grid carbon intensity factor for a region.
  * @param region - Region identifier (e.g., "us-east", "france")

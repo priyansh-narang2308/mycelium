@@ -1,12 +1,6 @@
 import Link from "next/link";
-import {
-  Target,
-  Zap,
-  TrendingDown,
-  BarChart3,
-  Shield,
-  BookOpen,
-} from "lucide-react";
+import { Shield, BookOpen, TrendingDown } from "lucide-react";
+import { PillarsSection } from "@/components/landing/PillarCard";
 
 export default function Home() {
   return (
@@ -68,57 +62,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="bg-canvas border border-hairline p-8 rounded-[24px] shadow-sm text-center">
-              <div className="w-16 h-16 bg-brand-lavender text-ink flex items-center justify-center rounded-2xl mx-auto mb-6">
-                <BarChart3 className="w-8 h-8" aria-hidden="true" />
-              </div>
-              <h3 className="text-[20px] font-semibold text-ink mb-3">
-                Understand
-              </h3>
-              <p className="text-muted font-medium text-[15px] leading-relaxed">
-                See exactly how much CO₂ each activity generates — with
-                relatable equivalents and transparent methodology.
-              </p>
-            </div>
-
-            <div className="bg-canvas border border-hairline p-8 rounded-[24px] shadow-sm text-center">
-              <div className="w-16 h-16 bg-brand-teal text-white flex items-center justify-center rounded-2xl mx-auto mb-6">
-                <Target className="w-8 h-8" aria-hidden="true" />
-              </div>
-              <h3 className="text-[20px] font-semibold text-ink mb-3">Track</h3>
-              <p className="text-muted font-medium text-[15px] leading-relaxed">
-                Type &ldquo;I drove 20km&rdquo; and we log it instantly. No
-                forms, no dropdowns. All computation stays in your browser.
-              </p>
-            </div>
-
-            <div className="bg-canvas border border-hairline p-8 rounded-[24px] shadow-sm text-center">
-              <div className="w-16 h-16 bg-brand-peach text-ink flex items-center justify-center rounded-2xl mx-auto mb-6">
-                <TrendingDown className="w-8 h-8" aria-hidden="true" />
-              </div>
-              <h3 className="text-[20px] font-semibold text-ink mb-3">
-                Reduce
-              </h3>
-              <p className="text-muted font-medium text-[15px] leading-relaxed">
-                AI recommends specific, actionable swaps based on your actual
-                habits. The AI narrates; it never fabricates figures.
-              </p>
-            </div>
-
-            <div className="bg-canvas border border-hairline p-8 rounded-[24px] shadow-sm text-center">
-              <div className="w-16 h-16 bg-brand-mint text-ink flex items-center justify-center rounded-2xl mx-auto mb-6">
-                <Zap className="w-8 h-8" aria-hidden="true" />
-              </div>
-              <h3 className="text-[20px] font-semibold text-ink mb-3">
-                Personalized Insights
-              </h3>
-              <p className="text-muted font-medium text-[15px] leading-relaxed">
-                Ask your AI Assistant anything about your data. Get answers
-                grounded in your real logged activities.
-              </p>
-            </div>
-          </div>
+          <PillarsSection />
         </div>
       </section>
 
