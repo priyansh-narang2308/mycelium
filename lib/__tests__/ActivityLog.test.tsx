@@ -8,7 +8,7 @@ const mockSetIsProcessing = jest.fn();
 
 const mockIsProcessing = false;
 
- const mockStoreState = {
+const mockStoreState = {
   activities: [],
   addActivity: mockAddActivity,
   setRecommendations: mockSetRecommendations,
