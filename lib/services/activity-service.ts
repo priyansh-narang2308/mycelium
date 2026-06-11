@@ -1,10 +1,31 @@
 import type { Activity, Recommendation } from "@/lib/types";
 import { calculateActivityEmissions } from "@/lib/agents/calculator";
+import { useActivityStore } from "@/lib/stores/activity-store";
+import { useAIStore } from "@/lib/stores/ai-store";
+import { useSettingsStore } from "@/lib/stores/settings-store";
 
 interface ParseResult {
   category: string;
   subCategory: string;
   amount: number;
+}
+
+export async function logActivity(input: string) {
+  const region = useSettingsStore.getState().region;
+  const dailyBudget = useSettingsStore.getState().dailyBudget;
+  const setRecommendations = useAIStore.getState().setRecommendations;
+  const setInsight = useAIStore.getState().setInsight;
+  const addActivity = useActivityStore.getState().addActivity;
+
+  const parsed = await parseActivity(input, region);
+  const activity = buildActivity(input, parsed, region);
+  
+  // Update state immediately
+  addActivity(activity);
+  
+  // Fetch AI feedback in the background
+  const updatedHistory = [...useActivityStore.getState().activities];
+  fetchAIFeedback(updatedHistory, region, dailyBudget, setRecommendations, setInsight);
 }
 
 export async function parseActivity(input: string, region: string): Promise<ParseResult> {

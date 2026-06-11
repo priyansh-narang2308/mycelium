@@ -1,22 +1,17 @@
 "use client";
 import { PieChart } from "lucide-react";
-import {
-  useRecommendations,
-  useInsight,
-  useDailyFootprint,
-  useBudgetUsed,
-  useIsProcessing,
-  useDailyBudget,
-} from "@/lib/store";
+import { useActivityStore } from "@/lib/stores/activity-store";
+import { useSettingsStore } from "@/lib/stores/settings-store";
+import { useAIStore } from "@/lib/stores/ai-store";
 import { motion } from "framer-motion";
 
 export default function InsightsPage() {
-  const recommendations = useRecommendations();
-  const insight = useInsight();
-  const dailyFootprint = useDailyFootprint();
-  const budgetUsed = useBudgetUsed();
-  const isProcessing = useIsProcessing();
-  const dailyBudget = useDailyBudget();
+  const recommendations = useAIStore((s) => s.recommendations);
+  const insight = useAIStore((s) => s.insight);
+  const dailyFootprint = useActivityStore((s) => s.dailyFootprint);
+  const budgetUsed = useActivityStore((s) => s.budgetUsed);
+  const isProcessing = useAIStore((s) => s.isProcessing);
+  const dailyBudget = useSettingsStore((s) => s.dailyBudget);
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-12">

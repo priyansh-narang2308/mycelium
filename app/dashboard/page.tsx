@@ -1,17 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import {
-  useActivities,
-  useDailyFootprint,
-  useBudgetUsed,
-  useDailyBudget,
-  useWeeklyTrend,
-  useRecommendations,
-  useChallenges,
-  useInsight,
-  useLoadSampleData,
-  useToggleChallenge,
-} from "@/lib/store";
+import { useActivityStore } from "@/lib/stores/activity-store";
+import { useAIStore } from "@/lib/stores/ai-store";
 import { ActivityLog } from "@/components/ActivityLog";
 import { FootprintCard } from "@/components/FootprintCard";
 import { RecommendationsList } from "@/components/RecommendationsList";
@@ -22,16 +12,9 @@ import { Leaf, Database, Zap, TrendingDown } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function Dashboard() {
-  const activities = useActivities();
-  const dailyFootprint = useDailyFootprint();
-  const budgetUsed = useBudgetUsed();
-  const dailyBudget = useDailyBudget();
-  const weeklyTrend = useWeeklyTrend();
-  const recommendations = useRecommendations();
-  const challenges = useChallenges();
-  const insight = useInsight();
-  const loadSampleData = useLoadSampleData();
-  const toggleChallenge = useToggleChallenge();
+  const activities = useActivityStore((s) => s.activities);
+  const loadSampleData = useActivityStore((s) => s.loadSampleData);
+  const recommendations = useAIStore((s) => s.recommendations);
 
   const [mounted, setMounted] = useState(false);
 
@@ -55,23 +38,17 @@ export default function Dashboard() {
 
       {activities.length > 0 ? (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <FootprintCard
-            activities={activities}
-            dailyFootprint={dailyFootprint}
-            budgetUsed={budgetUsed}
-            dailyBudget={dailyBudget}
-            insight={insight}
-          />
+          <FootprintCard />
 
           <div className="col-span-2 bg-brand-peach text-ink rounded-[24px] p-8">
             <h3 className="text-[20px] font-semibold mb-6 flex items-center gap-2 tracking-tight">
               <Zap className="w-6 h-6" aria-hidden="true" />
               Reduce: AI Personalized Carbon Swaps
             </h3>
-            <RecommendationsList recommendations={recommendations} />
+            <RecommendationsList />
           </div>
 
-          <WeeklyTrend weeklyTrend={weeklyTrend} />
+          <WeeklyTrend />
 
           {recommendations.length > 0 && (
             <div className="col-span-3 bg-brand-teal text-white rounded-[24px] p-8 shadow-sm">
@@ -98,10 +75,10 @@ export default function Dashboard() {
               <Zap className="w-5 h-5 text-brand-teal" aria-hidden="true" />
               Reduce: Habit Building Challenges
             </h3>
-            <ChallengesList challenges={challenges} onToggle={toggleChallenge} />
+            <ChallengesList />
           </div>
 
-          <RecentLogs activities={activities} />
+          <RecentLogs />
         </motion.div>
       ) : (
         <div className="py-24 px-6 text-center bg-canvas border border-dashed border-hairline rounded-[24px] max-w-2xl mx-auto shadow-sm">

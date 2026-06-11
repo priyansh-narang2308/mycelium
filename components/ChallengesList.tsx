@@ -2,12 +2,11 @@
 import { motion } from "framer-motion";
 import type { Challenge } from "@/lib/types";
 
-interface Props {
-  challenges: Challenge[];
-  onToggle: (id: string) => void;
-}
+import { useAIStore } from "@/lib/stores/ai-store";
 
-export function ChallengesList({ challenges, onToggle }: Props) {
+export function ChallengesList() {
+  const challenges = useAIStore((s) => s.challenges);
+  const onToggle = useAIStore((s) => s.toggleChallenge);
   return (
     <div className="grid gap-3">
       {challenges.map((c) => (

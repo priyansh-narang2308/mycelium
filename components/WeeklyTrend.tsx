@@ -9,11 +9,10 @@ const XAxis = dynamic(() => import("recharts").then((m) => m.XAxis), { ssr: fals
 const YAxis = dynamic(() => import("recharts").then((m) => m.YAxis), { ssr: false });
 const ResponsiveContainer = dynamic(() => import("recharts").then((m) => m.ResponsiveContainer), { ssr: false });
 
-interface Props {
-  weeklyTrend: { date: string; value: number }[];
-}
+import { useActivityStore } from "@/lib/stores/activity-store";
 
-export function WeeklyTrend({ weeklyTrend }: Props) {
+export function WeeklyTrend() {
+  const weeklyTrend = useActivityStore((s) => s.weeklyTrend);
   if (weeklyTrend.length === 0) return null;
 
   return (

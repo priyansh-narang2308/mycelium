@@ -1,30 +1,15 @@
 "use client";
 import { useState } from "react";
-import {
-  useActivities,
-  useAddActivity,
-  useSetRecommendations,
-  useSetInsight,
-  useSetIsProcessing,
-  useIsProcessing,
-  useRegion,
-  useDailyBudget,
-} from "@/lib/store";
+import { useAIStore } from "@/lib/stores/ai-store";
 import { motion } from "framer-motion";
 import { Terminal, Send } from "lucide-react";
 import { toast } from "sonner";
-import { parseActivity, buildActivity, fetchAIFeedback } from "@/lib/services/activity-service";
+import { logActivity } from "@/lib/services/activity-service";
 
 export function ActivityLog() {
   const [input, setInput] = useState("");
-  const activities = useActivities();
-  const addActivity = useAddActivity();
-  const setRecommendations = useSetRecommendations();
-  const setInsight = useSetInsight();
-  const setIsProcessing = useSetIsProcessing();
-  const isProcessing = useIsProcessing();
-  const region = useRegion();
-  const dailyBudget = useDailyBudget();
+  const isProcessing = useAIStore((s) => s.isProcessing);
+  const setIsProcessing = useAIStore((s) => s.setIsProcessing);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,12 +20,7 @@ export function ActivityLog() {
     setInput("");
 
     try {
-      const parsed = await parseActivity(rawInput, region);
-      const activity = buildActivity(rawInput, parsed, region);
-      addActivity(activity);
-
-      const updatedHistory = [...activities, activity];
-      fetchAIFeedback(updatedHistory, region, dailyBudget, setRecommendations, setInsight);
+      await logActivity(rawInput);
       toast.success("Activity logged and analyzed!");
     } catch {
       setInput(rawInput);

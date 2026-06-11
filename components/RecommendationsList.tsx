@@ -2,11 +2,10 @@
 import { motion } from "framer-motion";
 import type { Recommendation } from "@/lib/types";
 
-interface Props {
-  recommendations: Recommendation[];
-}
+import { useAIStore } from "@/lib/stores/ai-store";
 
-export function RecommendationsList({ recommendations }: Props) {
+export function RecommendationsList() {
+  const recommendations = useAIStore((s) => s.recommendations);
   return (
     <div className="grid gap-4" aria-live="polite">
       {recommendations.length > 0 ? (

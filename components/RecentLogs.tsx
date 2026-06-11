@@ -4,11 +4,10 @@ import { Map } from "lucide-react";
 import { motion } from "framer-motion";
 import type { Activity } from "@/lib/types";
 
-interface Props {
-  activities: Activity[];
-}
+import { useActivityStore } from "@/lib/stores/activity-store";
 
-export function RecentLogs({ activities }: Props) {
+export function RecentLogs() {
+  const activities = useActivityStore((s) => s.activities);
   if (activities.length === 0) return null;
 
   return (

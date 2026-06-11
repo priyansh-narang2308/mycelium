@@ -4,15 +4,16 @@ import { Leaf, TrendingDown } from "lucide-react";
 import type { Activity } from "@/lib/types";
 import { CategoryChart } from "@/components/charts/CategoryChart";
 
-interface Props {
-  activities: Activity[];
-  dailyFootprint: number;
-  budgetUsed: number;
-  dailyBudget: number;
-  insight: string | null;
-}
+import { useActivityStore } from "@/lib/stores/activity-store";
+import { useSettingsStore } from "@/lib/stores/settings-store";
+import { useAIStore } from "@/lib/stores/ai-store";
 
-export function FootprintCard({ activities, dailyFootprint, budgetUsed, dailyBudget, insight }: Props) {
+export function FootprintCard() {
+  const activities = useActivityStore((s) => s.activities);
+  const dailyFootprint = useActivityStore((s) => s.dailyFootprint);
+  const budgetUsed = useActivityStore((s) => s.budgetUsed);
+  const dailyBudget = useSettingsStore((s) => s.dailyBudget);
+  const insight = useAIStore((s) => s.insight);
   const chartData = useMemo(
     () =>
       activities.reduce(

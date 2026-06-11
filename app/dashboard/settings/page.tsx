@@ -2,15 +2,15 @@
 import { Settings2, Database, Globe } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { useDailyBudget, useRegion, useSetDailyBudget, useSetRegion } from "@/lib/store";
+import { useSettingsStore } from "@/lib/stores/settings-store";
 import { REGION_GRID_FACTORS } from "@/lib/emissions";
 import type { JSX } from "react";
 
 export default function SettingsPage(): JSX.Element {
-  const dailyBudget = useDailyBudget();
-  const region = useRegion();
-  const setDailyBudget = useSetDailyBudget();
-  const setRegion = useSetRegion();
+  const dailyBudget = useSettingsStore((s) => s.dailyBudget);
+  const region = useSettingsStore((s) => s.region);
+  const setDailyBudget = useSettingsStore((s) => s.setDailyBudget);
+  const setRegion = useSettingsStore((s) => s.setRegion);
 
   const [budget, setBudget] = useState(dailyBudget.toString());
   const [regionLocal, setRegionLocal] = useState(region);
