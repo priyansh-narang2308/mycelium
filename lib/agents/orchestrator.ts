@@ -1,6 +1,6 @@
 import { getAIClient, generateContentSafe } from "@/lib/agents/client";
 import { getRegionLabel } from "@/lib/emissions";
-import { parseOutputSchema } from "@/lib/schema";
+import { parseOutputSchema } from "@/lib/schemas/parse";
 import { buildParsePrompt } from "./prompts/parse.prompt";
 
 export interface ParseResult {

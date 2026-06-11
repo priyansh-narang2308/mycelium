@@ -12,6 +12,7 @@ interface AIHandlerOptions<TInput, TOutput> {
   ) => Promise<TOutput | null | undefined>;
   responseFn: (output: TOutput | null | undefined) => Record<string, unknown>;
   fallbackHandler?: (input: TInput) => TOutput | null | undefined;
+  errorHandler?: (error: unknown) => { error: string; status: number } | null | undefined;
 }
 
 export function createAIRoute<TInput, TOutput>(
@@ -52,6 +53,15 @@ export function createAIRoute<TInput, TOutput>(
           { error: "Invalid input data provided." },
           { status: 400 },
         );
+      }
+      if (options.errorHandler) {
+        const routeError = options.errorHandler(error);
+        if (routeError) {
+          return NextResponse.json(
+            { error: routeError.error },
+            { status: routeError.status },
+          );
+        }
       }
       return NextResponse.json(
         { error: "An unexpected error occurred during processing." },

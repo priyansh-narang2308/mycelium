@@ -1,6 +1,6 @@
 import { createAIRoute } from "@/lib/api/route-factory";
 import { parseNaturalLanguage } from "@/lib/agents/orchestrator";
-import { parseInputSchema } from "@/lib/schema";
+import { parseInputSchema } from "@/lib/schemas/parse";
 import { parseFallback } from "@/lib/agents/fallback-parser";
 import type { ParseResult } from "@/lib/agents/orchestrator";
 
@@ -21,4 +21,5 @@ export const POST = createAIRoute<
       amount: res.amount,
     };
   },
+  errorHandler: () => ({ error: "Failed to parse activity input.", status: 500 }),
 });

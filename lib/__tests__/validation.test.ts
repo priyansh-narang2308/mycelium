@@ -1,4 +1,7 @@
-import { parseInputSchema, activitySchema, recommendSchema, insightSchema } from "../schema";
+import { parseInputSchema } from "../schemas/parse";
+import { activitySchema } from "../schemas/activity";
+import { recommendSchema } from "../schemas/recommend";
+import { insightSchema } from "../schemas/insight";
 
 describe("parseInputSchema", () => {
   it("validates a correct parse input", () => {

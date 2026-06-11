@@ -2,6 +2,8 @@
 import { useMemo } from "react";
 import { Leaf, TrendingDown } from "lucide-react";
 import { CategoryChart } from "@/components/charts/CategoryChart";
+import { Meter } from "./FootprintCard/Meter";
+import { InsightBox } from "./FootprintCard/InsightBox";
 
 import { useActivityStore } from "@/lib/stores/activity-store";
 import { useSettingsStore } from "@/lib/stores/settings-store";
@@ -55,26 +57,11 @@ export function FootprintCard() {
         )}
       </div>
 
-      <div className="mt-6">
-        <div className="h-3 bg-black/20 rounded-full overflow-hidden">
-          <div
-            className="h-full bg-brand-mint rounded-full transition-all duration-500"
-            style={{ width: `${Math.min(budgetUsed, 100)}%` }}
-            role="meter"
-            aria-valuenow={budgetUsed}
-            aria-valuemin={0}
-            aria-valuemax={100}
-          />
-        </div>
-      </div>
+      <Meter budgetUsed={budgetUsed} />
 
       <CategoryChart data={chartData} />
 
-      <div className="bg-black/20 rounded-xl p-4 mt-6" aria-live="polite">
-        <p className="text-[15px] font-medium text-white/90">
-          {insight || "Every small step counts towards a greener future."}
-        </p>
-      </div>
+      <InsightBox insight={insight} />
     </div>
   );
 }

@@ -2,7 +2,7 @@ import { getAIClient, generateContentSafe } from "@/lib/agents/client";
 import { Activity, Recommendation } from "@/lib/types";
 import { getRegionLabel } from "@/lib/emissions";
 import { z } from "zod";
-import { recommendationSchema } from "@/lib/schema";
+import { recommendationSchema } from "@/lib/schemas/recommend";
 import { buildRecommendPrompt } from "./prompts/recommend.prompt";
 
 const recommendationArraySchema = z.array(recommendationSchema);

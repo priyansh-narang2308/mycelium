@@ -1,6 +1,6 @@
 import { createAIRoute } from "@/lib/api/route-factory";
 import { generateInsight } from "@/lib/agents/insights";
-import { insightSchema } from "@/lib/schema";
+import { insightSchema } from "@/lib/schemas/insight";
 
 export const POST = createAIRoute({
   schema: insightSchema,
@@ -12,4 +12,5 @@ export const POST = createAIRoute({
   }),
   handler: async (input) => generateInsight(input.history, input.budget, input.region),
   responseFn: (insight: string | null | undefined) => ({ insight: insight || "" }),
+  errorHandler: () => ({ error: "Failed to generate insights.", status: 500 }),
 });

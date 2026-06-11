@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { getRegion, setRegion, getBudget, setBudget } from "@/lib/storage";
-import { useActivityStore } from "./activity-store";
 
 interface SettingsState {
   dailyBudget: number;
@@ -16,7 +15,6 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   setDailyBudget: (budget: number) =>
     set(() => {
       setBudget(budget);
-      useActivityStore.getState().setDailyBudget(budget);
       return { dailyBudget: budget };
     }),
 

@@ -3,6 +3,7 @@ import { Settings2, Database, Globe } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useSettingsStore } from "@/lib/stores/settings-store";
+import { useActivityStore } from "@/lib/stores/activity-store";
 import { REGION_GRID_FACTORS } from "@/lib/emissions";
 import type { JSX } from "react";
 
@@ -11,6 +12,7 @@ export default function SettingsPage(): JSX.Element {
   const region = useSettingsStore((s) => s.region);
   const setDailyBudget = useSettingsStore((s) => s.setDailyBudget);
   const setRegion = useSettingsStore((s) => s.setRegion);
+  const recalculate = useActivityStore((s) => s.recalculate);
 
   const [budget, setBudget] = useState(dailyBudget.toString());
   const [regionLocal, setRegionLocal] = useState(region);
@@ -21,6 +23,7 @@ export default function SettingsPage(): JSX.Element {
     if (!isNaN(budgetNum) && budgetNum > 0) {
       localStorage.setItem("CARBON_BUDGET", budget);
       setDailyBudget(budgetNum);
+      recalculate(budgetNum);
     }
     localStorage.setItem("CARBON_REGION", regionLocal);
     setRegion(regionLocal);
