@@ -1,11 +1,8 @@
 import { getAIClient, generateContentSafe } from "@/lib/agents/client";
 import { Activity, Recommendation } from "@/lib/types";
 import { getRegionLabel } from "@/lib/emissions";
-import { z } from "zod";
-import { recommendationSchema } from "@/lib/schemas/recommend";
+import { recommendationArraySchema } from "@/lib/schemas/recommend";
 import { buildRecommendPrompt } from "./prompts/recommend.prompt";
-
-const recommendationArraySchema = z.array(recommendationSchema);
 
 export async function getRecommendations(
   activities: Activity[],

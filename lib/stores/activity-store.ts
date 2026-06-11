@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import type { Activity } from "@/lib/types";
-import { computeDailyFootprint, computeWeeklyTrend } from "@/lib/compute";
 import {
   getActivities,
   getBudget,
@@ -23,15 +22,13 @@ interface ActivityState {
 
 const initialActivities = getActivities();
 const initialBudget = getBudget();
+const initialMetrics = recalculateBudget(initialActivities, initialBudget);
 
 export const useActivityStore = create<ActivityState>((set) => ({
   activities: initialActivities,
-  dailyFootprint: computeDailyFootprint(initialActivities),
-  budgetUsed: Math.min(
-    (computeDailyFootprint(initialActivities) / initialBudget) * 100,
-    100,
-  ),
-  weeklyTrend: computeWeeklyTrend(initialActivities),
+  dailyFootprint: initialMetrics.dailyFootprint,
+  budgetUsed: initialMetrics.budgetUsed,
+  weeklyTrend: initialMetrics.weeklyTrend,
   dailyBudget: initialBudget,
 
   addActivity: (activity) =>

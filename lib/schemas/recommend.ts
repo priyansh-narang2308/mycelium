@@ -13,3 +13,5 @@ export const recommendationSchema = z.object({
   potentialSavings: z.number().nonnegative().max(10000),
   difficulty: z.enum(["Easy", "Medium", "Hard"]),
 });
+
+export const recommendationArraySchema = z.array(recommendationSchema);

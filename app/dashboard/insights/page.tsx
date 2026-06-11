@@ -1,9 +1,11 @@
 "use client";
 import { PieChart } from "lucide-react";
+import { PageHeader } from "@/components/layout/PageHeader";
+import { BudgetMeter } from "@/components/charts/BudgetMeter";
+import { RecommendationItem } from "@/components/RecommendationItem";
 import { useActivityStore } from "@/lib/stores/activity-store";
 import { useSettingsStore } from "@/lib/stores/settings-store";
 import { useAIStore } from "@/lib/stores/ai-store";
-import { RecommendationItem } from "@/components/RecommendationItem";
 
 export default function InsightsPage() {
   const recommendations = useAIStore((s) => s.recommendations);
@@ -15,14 +17,10 @@ export default function InsightsPage() {
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-12">
-      <header className="mb-12">
-        <h1 className="text-[40px] font-medium text-ink tracking-[-1.0px] mb-2 flex items-center gap-3">
-          Personalized Insights
-        </h1>
-        <p className="text-muted font-medium">
-          Understand your carbon footprint and discover ways to reduce it, powered by CarbonKeeper and Gemini AI.
-        </p>
-      </header>
+      <PageHeader
+        title="Personalized Insights"
+        description="Understand your carbon footprint and discover ways to reduce it, powered by CarbonKeeper and Gemini AI."
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-1 space-y-8">
@@ -34,29 +32,12 @@ export default function InsightsPage() {
               />
               Understand: Budget Analysis
             </h2>
-            <div className="relative pt-4">
-              <div className="flex justify-between text-[14px] font-bold text-ink mb-2">
-                <span>{dailyFootprint.toFixed(1)} kg used</span>
-                <span>{dailyBudget} kg budget</span>
-              </div>
-              <div className="w-full h-4 bg-surface-strong rounded-full overflow-hidden">
-                <div
-                  className={`h-full rounded-full transition-all duration-1000 ${budgetUsed > 90 ? "bg-brand-pink" : "bg-brand-teal"}`}
-                  style={{ width: `${Math.min(budgetUsed, 100)}%` }}
-                  role="meter"
-                  aria-label="Budget usage percentage"
-                  aria-valuenow={budgetUsed}
-                  aria-valuemin={0}
-                  aria-valuemax={100}
-                />
-              </div>
-              <p className="text-muted text-[14px] font-medium mt-4 leading-relaxed">
-                {insight ||
-                  (budgetUsed === 0
-                    ? "Log an activity to get started."
-                    : "You're on track! Keep up the good work.")}
-              </p>
-            </div>
+            <BudgetMeter
+              budgetUsed={budgetUsed}
+              dailyFootprint={dailyFootprint}
+              dailyBudget={dailyBudget}
+              insight={insight}
+            />
           </div>
         </div>
 

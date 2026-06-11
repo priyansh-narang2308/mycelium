@@ -2,6 +2,7 @@
 import { useActivityStore } from "@/lib/stores/activity-store";
 import { format } from "date-fns";
 import { Trash2, FileText } from "lucide-react";
+import { PageHeader } from "@/components/layout/PageHeader";
 
 export default function LogsPage() {
   const activities = useActivityStore((s) => s.activities);
@@ -9,25 +10,24 @@ export default function LogsPage() {
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-12">
-      <header className="mb-12 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-[40px] font-medium text-ink tracking-[-1.0px] mb-2">
-            Track: Activity Logs & Carbon History
-          </h1>
-          <p className="text-muted font-medium">
-            Understand your footprint by reviewing the history of all logged activities.
-          </p>
-        </div>
-        {activities.length > 0 && (
-          <button
-            onClick={() => { if (window.confirm("Clear all activity logs? This cannot be undone.")) clearActivities(); }}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-surface-strong text-ink font-semibold hover:bg-brand-pink hover:text-white transition-colors"
-          >
-            <Trash2 className="w-4 h-4" aria-hidden="true" />
-            Clear Data
-          </button>
-        )}
-      </header>
+      <PageHeader
+        title="Track: Activity Logs & Carbon History"
+        description="Understand your footprint by reviewing the history of all logged activities."
+        trailing={
+          activities.length > 0 ? (
+            <button
+              onClick={() => {
+                if (window.confirm("Clear all activity logs? This cannot be undone."))
+                  clearActivities();
+              }}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-surface-strong text-ink font-semibold hover:bg-brand-pink hover:text-white transition-colors"
+            >
+              <Trash2 className="w-4 h-4" aria-hidden="true" />
+              Clear Data
+            </button>
+          ) : undefined
+        }
+      />
 
       {activities.length > 0 ? (
         <div className="bg-canvas border border-hairline rounded-[24px] overflow-hidden shadow-sm">

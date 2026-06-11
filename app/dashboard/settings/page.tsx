@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { useSettingsStore } from "@/lib/stores/settings-store";
 import { useActivityStore } from "@/lib/stores/activity-store";
 import { REGION_GRID_FACTORS } from "@/lib/emissions";
+import { PageHeader } from "@/components/layout/PageHeader";
 import type { JSX } from "react";
 
 export default function SettingsPage(): JSX.Element {
@@ -30,15 +31,11 @@ export default function SettingsPage(): JSX.Element {
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-12">
-      <header className="mb-12">
-        <h1 className="text-[40px] font-medium text-ink tracking-[-1.0px] mb-2 flex items-center gap-3">
-          <Settings2 className="w-8 h-8 text-muted" aria-hidden="true" />
-          Settings
-        </h1>
-        <p className="text-muted font-medium">
-          Manage your app preferences and API configuration.
-        </p>
-      </header>
+      <PageHeader
+        title="Settings"
+        description="Manage your app preferences and API configuration."
+        icon={<Settings2 className="w-8 h-8 text-muted" aria-hidden="true" />}
+      />
 
       <form onSubmit={handleSave} className="space-y-8">
         <section className="bg-canvas border border-hairline rounded-[24px] p-8 shadow-sm">

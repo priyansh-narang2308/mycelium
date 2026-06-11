@@ -23,3 +23,18 @@ export async function generateContentSafe(
     return null;
   }
 }
+
+export async function generateTextSafe(
+  ai: GoogleGenAI,
+  prompt: string,
+): Promise<string | null> {
+  try {
+    const response = await ai.models.generateContent({
+      model: "gemini-flash-latest",
+      contents: prompt,
+    });
+    return response.text || null;
+  } catch {
+    return null;
+  }
+}

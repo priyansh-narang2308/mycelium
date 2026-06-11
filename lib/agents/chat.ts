@@ -1,4 +1,4 @@
-import { getAIClient } from "@/lib/agents/client";
+import { getAIClient, generateTextSafe } from "@/lib/agents/client";
 import type { Activity } from "@/lib/types";
 
 export async function generateChatResponse(
@@ -39,10 +39,6 @@ Rules:
 User's question: ${message}
 `.trim();
 
-  const response = await ai.models.generateContent({
-    model: "gemini-flash-latest",
-    contents: prompt,
-  });
-
-  return response.text || "";
+  const response = await generateTextSafe(ai, prompt);
+  return response || "";
 }

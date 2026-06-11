@@ -69,7 +69,22 @@ User Input ("I drove 12km")
 
 ---
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for development conventions and project structure.
+## Code Quality Engineering
+
+Code Quality is evaluated **independently** from Testing, Security, and Accessibility in PromptWars. This repository targets production-grade maintainability:
+
+| Signal | Evidence |
+| --- | --- |
+| Layered architecture | UI → hooks → services → API → agents with strict import boundaries |
+| Schema-driven types | `Activity`, `Recommendation` derived from Zod via `z.infer` |
+| Dependency injection | `logActivityWithDeps` — services never import Zustand |
+| DRY components | Shared `PageHeader`, `RecommendationItem`, `BudgetMeter` |
+| Persistence abstraction | All `localStorage` via `lib/storage.ts` |
+| Agent consistency | All agents use `generateContentSafe` / `generateTextSafe` |
+| Zero static-analysis debt | ESLint clean, TypeScript strict, no `any` or `eslint-disable` |
+| CI pipeline | lint + typecheck + 153 tests + build on every push |
+
+See [docs/CODE_QUALITY.md](docs/CODE_QUALITY.md) and [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for full details. See [CONTRIBUTING.md](CONTRIBUTING.md) for development conventions.
 
 ## Getting Started
 
