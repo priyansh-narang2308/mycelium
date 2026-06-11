@@ -4,6 +4,10 @@ import { getRegionLabel } from "@/lib/emissions";
 import { parseOutputSchema } from "@/lib/schemas/parse";
 import { buildParsePrompt } from "./prompts/parse.prompt";
 
+/**
+ * Partial result from parsing natural language input into structured activity data.
+ * Fields are optional as the parser may not extract all information.
+ */
 export type ParseResult = Partial<z.infer<typeof parseOutputSchema>>;
 
 /**

@@ -1,11 +1,25 @@
 import { startOfDay, subDays, format } from "date-fns";
 import type { Activity } from "@/lib/types";
 
+/**
+ * A single entry in a category breakdown, mapping a category name to its total CO2e value.
+ */
 export interface CategoryBreakdownEntry {
   name: string;
   value: number;
 }
 
+/**
+ * Computes the CO2e trend for each day of the past week.
+ *
+ * @param activities - Array of activity records to aggregate.
+ * @returns An array of `{ date, value }` objects representing daily CO2e totals for the last 7 days.
+ * @example
+ * ```ts
+ * const trend = computeWeeklyTrend(activities);
+ * // [{ date: "Mon", value: 1.2 }, { date: "Tue", value: 0.8 }, ...]
+ * ```
+ */
 export function computeWeeklyTrend(activities: Activity[]) {
   const today = startOfDay(new Date());
   const buckets: Record<string, number> = {};
@@ -24,6 +38,17 @@ export function computeWeeklyTrend(activities: Activity[]) {
   return Object.entries(buckets).map(([date, value]) => ({ date, value }));
 }
 
+/**
+ * Sums the CO2e of all activities recorded today.
+ *
+ * @param activities - Array of activity records to filter and sum.
+ * @returns The total CO2e (kg) for today's activities.
+ * @example
+ * ```ts
+ * const todayTotal = computeDailyFootprint(activities);
+ * // 3.45
+ * ```
+ */
 export function computeDailyFootprint(activities: Activity[]) {
   const today = startOfDay(new Date());
   return activities
@@ -33,6 +58,17 @@ export function computeDailyFootprint(activities: Activity[]) {
     .reduce((sum, a) => sum + a.co2e, 0);
 }
 
+/**
+ * Groups activities by category and sums their CO2e values.
+ *
+ * @param activities - Array of activity records to group.
+ * @returns An array of `{ name, value }` entries, one per unique category.
+ * @example
+ * ```ts
+ * const breakdown = computeCategoryBreakdown(activities);
+ * // [{ name: "energy", value: 12.5 }, { name: "travel", value: 8.3 }]
+ * ```
+ */
 export function computeCategoryBreakdown(
   activities: Activity[],
 ): CategoryBreakdownEntry[] {

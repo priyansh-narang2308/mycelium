@@ -33,7 +33,7 @@ function createRateLimiter(
 
     if (!req.nextUrl.pathname.startsWith("/api/")) return NextResponse.next();
 
-    const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "127.0.0.1";
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "127.0.0.1";
     const now = Date.now();
 
     const record = rateLimitMap.get(ip);

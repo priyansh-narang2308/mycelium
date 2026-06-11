@@ -3,6 +3,13 @@ import { Activity } from "@/lib/types";
 import { getRegionLabel } from "@/lib/emissions";
 import { buildInsightPrompt } from "./prompts/insight.prompt";
 
+/**
+ * Generates a personalized carbon footprint insight based on activity history.
+ * @param history - Array of user activities to analyze for today's emissions
+ * @param budget - Daily carbon budget in kg CO₂
+ * @param region - Optional region context for localized insight
+ * @returns Promise resolving to an insight string, or empty string if generation fails
+ */
 export async function generateInsight(
   history: Activity[],
   budget: number,

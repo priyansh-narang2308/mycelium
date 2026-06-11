@@ -1,29 +1,47 @@
 import type { Activity, Recommendation } from "@/lib/types";
-import { calculateActivityEmissions } from "@/lib/agents/calculator";
-import type { ParseResult } from "@/lib/agents/orchestrator";
+import { parseActivity } from "./parse-service";
+import { buildActivity } from "./activity-builder";
+import { fetchAIFeedback } from "./feedback-service";
 
+/**
+ * Dependencies required for logging an activity.
+ */
 export interface LogActivityDeps {
+  /** User's geographic region. */
   region: string;
+  /** Daily carbon budget in kg CO₂e. */
   dailyBudget: number;
+  /** Array of previously logged activities. */
   activities: Activity[];
+  /** Callback to add a new activity to state. */
   addActivity: (activity: Activity) => void;
-  setRecommendations: (recs: Recommendation[]) => void;
+  /** Callback to update recommendations. */
+  setRecommendations: (recommendations: Recommendation[]) => void;
+  /** Callback to update the current insight. */
   setInsight: (insight: string) => void;
 }
 
-export interface AIFeedbackResult {
-  recommendationsUpdated: boolean;
-  insightUpdated: boolean;
-  error?: string;
-}
-
 /**
- * Orchestrates the logging of a new carbon activity by parsing the input, calculating emissions,
- * and asynchronously fetching AI recommendations and insights.
- * 
- * @param input - The raw natural language input from the user (e.g., "I drove 20 miles").
- * @param deps - The injected dependencies containing region, budget, state arrays, and dispatch functions.
- * @returns A Promise that resolves when the activity is logged. AI feedback continues asynchronously.
+ * Orchestrates logging a new carbon activity.
+ *
+ * Parses user input, calculates emissions, stores the activity,
+ * and asynchronously fetches AI recommendations and insights.
+ *
+ * @param input - Raw natural language input (e.g., "I drove 20 miles").
+ * @param deps - Injected dependencies for state management.
+ * @returns Promise that resolves when the activity is logged.
+ *
+ * @example
+ * ```ts
+ * await logActivityWithDeps("I drove 12km", {
+ *   region: "us-east",
+ *   dailyBudget: 10,
+ *   activities: [],
+ *   addActivity: setState,
+ *   setRecommendations: setRecs,
+ *   setInsight: setInsight,
+ * });
+ * ```
  */
 export async function logActivityWithDeps(
   input: string,
@@ -42,88 +60,4 @@ export async function logActivityWithDeps(
     deps.setRecommendations,
     deps.setInsight,
   );
-}
-
-export async function parseActivity(
-  input: string,
-  region: string,
-): Promise<ParseResult> {
-  const res = await fetch("/api/parse", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ input, region }),
-  });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.error || "Failed to parse input");
-  }
-  return res.json();
-}
-
-export function buildActivity(
-  rawInput: string,
-  parsed: ParseResult,
-  region: string,
-): Activity {
-  const data = calculateActivityEmissions(
-    parsed.category ?? "transport",
-    parsed.subCategory ?? "car",
-    parsed.amount ?? 1,
-    rawInput,
-    region,
-  );
-  return {
-    id: crypto.randomUUID(),
-    timestamp: new Date().toISOString(),
-    ...data,
-  };
-}
-
-export async function fetchAIFeedback(
-  history: Activity[],
-  region: string,
-  budget: number,
-  onRecommendations: (recs: Recommendation[]) => void,
-  onInsight: (insight: string) => void,
-): Promise<AIFeedbackResult> {
-  try {
-    const [recRes, insRes] = await Promise.all([
-      fetch("/api/recommend", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ history, region }),
-      }),
-      fetch("/api/insight", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ history, budget, region }),
-      }),
-    ]);
-
-    let recommendationsUpdated = false;
-    let insightUpdated = false;
-
-    if (recRes.ok) {
-      const data = await recRes.json();
-      if (data.recommendations?.length) {
-        onRecommendations(data.recommendations);
-        recommendationsUpdated = true;
-      }
-    }
-    if (insRes.ok) {
-      const data = await insRes.json();
-      if (data.insight) {
-        onInsight(data.insight);
-        insightUpdated = true;
-      }
-    }
-
-    return { recommendationsUpdated, insightUpdated };
-  } catch (error) {
-    return {
-      recommendationsUpdated: false,
-      insightUpdated: false,
-      error: error instanceof Error ? error.message : "AI feedback request failed",
-    };
-  }
 }

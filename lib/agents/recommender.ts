@@ -8,6 +8,12 @@ import {
 } from "@/lib/utils/activity-context";
 import { buildRecommendPrompt } from "./prompts/recommend.prompt";
 
+/**
+ * Generates personalized carbon-reduction recommendations based on user activities.
+ * @param activities - Array of recent user activities to analyze
+ * @param region - Optional region context for localized recommendations
+ * @returns Promise resolving to an array of Recommendation objects, or empty array if none generated
+ */
 export async function getRecommendations(
   activities: Activity[],
   region?: string,

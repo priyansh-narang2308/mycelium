@@ -1,4 +1,4 @@
-import { buildActivity } from "../services/activity-service";
+import { buildActivity } from "../services/activity-builder";
 
 describe("activity-service", () => {
   it("buildActivity assigns required fields from parsed input", () => {

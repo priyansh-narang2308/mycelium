@@ -7,6 +7,18 @@ const CO2_EQUIVALENTS = [
   { threshold: 200.0, text: "a flight from NY to LA", value: 150.0 },
 ];
 
+/**
+ * Returns a human-readable equivalent string for the given CO2e amount in kilograms,
+ * expressed in terms of everyday activities.
+ *
+ * @param kgCO2 - The CO2e amount in kilograms.
+ * @returns A string like `"= 2.5x boiling a kettle"` or `"Zero emissions!"` if <= 0.
+ * @example
+ * ```ts
+ * const eq = getEquivalent(0.5);
+ * // "= 0.8x a load of laundry"
+ * ```
+ */
 export function getEquivalent(kgCO2: number): string {
   if (kgCO2 <= 0) return "Zero emissions!";
   

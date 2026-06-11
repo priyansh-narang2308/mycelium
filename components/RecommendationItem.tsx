@@ -2,13 +2,13 @@ import { motion } from "framer-motion";
 import type { Recommendation } from "@/lib/types";
 
 interface RecommendationItemProps {
-  rec: Recommendation;
+  recommendation: Recommendation;
   index: number;
   variant?: "compact" | "detailed";
 }
 
 export function RecommendationItem({
-  rec,
+  recommendation,
   index,
   variant = "compact",
 }: RecommendationItemProps) {
@@ -21,17 +21,17 @@ export function RecommendationItem({
         className="bg-canvas rounded-xl p-6 flex flex-col md:flex-row justify-between items-start md:items-center border border-hairline gap-4 shadow-sm"
       >
         <div className="flex-1">
-          <h4 className="font-semibold text-ink text-[18px] mb-2">{rec.title}</h4>
+          <h4 className="font-semibold text-ink text-[18px] mb-2">{recommendation.title}</h4>
           <p className="text-muted font-medium text-[15px] leading-relaxed">
-            {rec.description}
+            {recommendation.description}
           </p>
         </div>
         <div className="text-left md:text-right shrink-0 bg-brand-teal/5 px-4 py-3 rounded-lg border border-brand-teal/10">
           <span className="block text-brand-teal font-bold text-[24px] leading-none tracking-tight">
-            -{rec.potentialSavings}kg
+            -{recommendation.potentialSavings}kg
           </span>
           <span className="text-[12px] text-brand-teal/70 uppercase tracking-wider font-bold mt-1 block">
-            {rec.difficulty} Effort
+            {recommendation.difficulty} Effort
           </span>
         </div>
       </motion.div>
@@ -46,15 +46,15 @@ export function RecommendationItem({
       className="bg-canvas/60 rounded-xl p-5 flex justify-between items-center border border-ink/5 shadow-sm"
     >
       <div>
-        <h4 className="font-semibold text-[16px] mb-1">{rec.title}</h4>
-        <p className="text-ink/80 text-[14px]">{rec.description}</p>
+        <h4 className="font-semibold text-[16px] mb-1">{recommendation.title}</h4>
+        <p className="text-ink/80 text-[14px]">{recommendation.description}</p>
       </div>
       <div className="text-right ml-4 shrink-0">
         <span className="block text-brand-teal font-bold text-[18px]">
-          -{rec.potentialSavings}kg
+          -{recommendation.potentialSavings}kg
         </span>
         <span className="text-[12px] text-ink/70 uppercase tracking-wider font-semibold">
-          {rec.difficulty}
+          {recommendation.difficulty}
         </span>
       </div>
     </motion.div>

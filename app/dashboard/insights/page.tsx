@@ -62,10 +62,10 @@ export default function InsightsPage() {
               </div>
             ) : recommendations.length > 0 ? (
               <div className="grid gap-4">
-                {recommendations.map((rec, i) => (
+                {recommendations.map((recommendation, i) => (
                   <RecommendationItem
-                    key={rec.id}
-                    rec={rec}
+                    key={recommendation.id}
+                    recommendation={recommendation}
                     index={i}
                     variant="detailed"
                   />

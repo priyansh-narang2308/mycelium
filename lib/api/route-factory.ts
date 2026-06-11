@@ -1,20 +1,53 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { aiCache } from "@/lib/cache";
+import { isAppError } from "@/lib/errors";
 
+/**
+ * Configuration options for creating an AI-powered API route.
+ *
+ * @typeParam TInput - The validated input type.
+ * @typeParam TOutput - The output type from the AI handler.
+ */
 interface AIHandlerOptions<TInput, TOutput> {
+  /** Zod schema for input validation. */
   schema: z.ZodSchema<TInput>;
+  /** Prefix for cache keys. */
   cachePrefix: string;
+  /** Function to generate cache key from input. */
   cacheKeyFn: (input: TInput) => Record<string, unknown>;
+  /** Main AI handler function. */
   handler: (
     input: TInput,
     apiKey?: string,
   ) => Promise<TOutput | null | undefined>;
+  /** Function to transform output for response. */
   responseFn: (output: TOutput | null | undefined) => Record<string, unknown>;
+  /** Optional fallback handler when AI fails. */
   fallbackHandler?: (input: TInput) => TOutput | null | undefined;
+  /** Optional custom error handler. */
   errorHandler?: (error: unknown) => { error: string; status: number } | null | undefined;
 }
 
+/**
+ * Creates a standardized AI-powered API route with caching, validation, and error handling.
+ *
+ * @typeParam TInput - The validated input type.
+ * @typeParam TOutput - The output type from the AI handler.
+ * @param options - Configuration for the route.
+ * @returns A Next.js API route handler.
+ *
+ * @example
+ * ```ts
+ * export const POST = createAIRoute({
+ *   schema: parseInputSchema,
+ *   cachePrefix: "parse",
+ *   cacheKeyFn: (input) => ({ input: input.input }),
+ *   handler: async (input) => parseInput(input.input),
+ *   responseFn: (res) => ({ result: res }),
+ * });
+ * ```
+ */
 export function createAIRoute<TInput, TOutput>(
   options: AIHandlerOptions<TInput, TOutput>,
 ) {
@@ -53,6 +86,9 @@ export function createAIRoute<TInput, TOutput>(
           { error: "Invalid input data provided." },
           { status: 400 },
         );
+      }
+      if (isAppError(error)) {
+        return NextResponse.json(error.toJSON(), { status: error.status });
       }
       if (options.errorHandler) {
         const routeError = options.errorHandler(error);

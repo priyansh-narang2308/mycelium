@@ -2,6 +2,9 @@ import type { z } from "zod";
 import type { parseOutputSchema } from "@/lib/schemas/parse";
 import type { ActivityCategory } from "@/lib/types";
 
+/**
+ * Output type for the parse schema, representing structured activity data extracted from natural language.
+ */
 type ParseOutput = z.infer<typeof parseOutputSchema>;
 
 const KEYWORD_MAP: [RegExp, ActivityCategory, string][] = [
@@ -29,6 +32,12 @@ function extractAmount(input: string): number | null {
   return null;
 }
 
+/**
+ * Fallback parser that extracts activity data from natural language using keyword matching.
+ * Used when AI parsing fails or is unavailable.
+ * @param input - Natural language input string to parse
+ * @returns ParseOutput with extracted category, subCategory, and amount
+ */
 export function parseFallback(input: string): ParseOutput {
   const amount = extractAmount(input) || 1;
 

@@ -8,6 +8,15 @@ function toActivityCategory(category: string): ActivityCategory {
   return result.success ? result.data : "transport";
 }
 
+/**
+ * Calculates carbon emissions for a specific activity and returns a partial Activity object.
+ * @param category - Activity category string (will be normalized to ActivityCategory)
+ * @param subCategory - Specific sub-category within the main category
+ * @param amount - Quantity of the activity (e.g., miles driven, kWh used)
+ * @param rawInput - Optional original natural language input that generated this activity
+ * @param region - Optional region for location-specific emission factors
+ * @returns Activity object without id and timestamp fields
+ */
 export function calculateActivityEmissions(
   category: string,
   subCategory: string,
