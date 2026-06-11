@@ -4,10 +4,11 @@ import { useAIStore } from "@/lib/stores/ai-store";
 import { motion } from "framer-motion";
 import { Terminal, Send } from "lucide-react";
 import { toast } from "sonner";
-import { logActivity } from "@/lib/services/activity-service";
+import { useLogActivity } from "@/lib/hooks/useLogActivity";
 
 export function ActivityLog() {
   const [input, setInput] = useState("");
+  const logActivity = useLogActivity();
   const isProcessing = useAIStore((s) => s.isProcessing);
   const setIsProcessing = useAIStore((s) => s.setIsProcessing);
 

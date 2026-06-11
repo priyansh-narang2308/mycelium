@@ -19,10 +19,6 @@ export async function generateInsight(
 
   const prompt = buildInsightPrompt(percentage, budget, todayEmissions, regionContext);
 
-  try {
-    const response = await generateContentSafe(ai, prompt);
-    return response || "";
-  } catch {
-    return "";
-  }
+  const response = await generateContentSafe(ai, prompt);
+  return response || "";
 }

@@ -1,6 +1,11 @@
 import { startOfDay, subDays, format } from "date-fns";
 import type { Activity } from "@/lib/types";
 
+export interface CategoryBreakdownEntry {
+  name: string;
+  value: number;
+}
+
 export function computeWeeklyTrend(activities: Activity[]) {
   const today = startOfDay(new Date());
   const buckets: Record<string, number> = {};
@@ -26,4 +31,18 @@ export function computeDailyFootprint(activities: Activity[]) {
       (a) => startOfDay(new Date(a.timestamp)).getTime() === today.getTime(),
     )
     .reduce((sum, a) => sum + a.co2e, 0);
+}
+
+export function computeCategoryBreakdown(
+  activities: Activity[],
+): CategoryBreakdownEntry[] {
+  return activities.reduce<CategoryBreakdownEntry[]>((acc, curr) => {
+    const existing = acc.find((item) => item.name === curr.category);
+    if (existing) {
+      existing.value += curr.co2e;
+    } else {
+      acc.push({ name: curr.category, value: curr.co2e });
+    }
+    return acc;
+  }, []);
 }

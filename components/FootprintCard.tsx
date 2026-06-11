@@ -4,7 +4,7 @@ import { Leaf, TrendingDown } from "lucide-react";
 import { CategoryChart } from "@/components/charts/CategoryChart";
 import { Meter } from "./FootprintCard/Meter";
 import { InsightBox } from "./FootprintCard/InsightBox";
-
+import { computeCategoryBreakdown } from "@/lib/compute";
 import { useActivityStore } from "@/lib/stores/activity-store";
 import { useSettingsStore } from "@/lib/stores/settings-store";
 import { useAIStore } from "@/lib/stores/ai-store";
@@ -16,16 +16,7 @@ export function FootprintCard() {
   const dailyBudget = useSettingsStore((s) => s.dailyBudget);
   const insight = useAIStore((s) => s.insight);
   const chartData = useMemo(
-    () =>
-      activities.reduce(
-        (acc, curr) => {
-          const existing = acc.find((item) => item.name === curr.category);
-          if (existing) existing.value += curr.co2e;
-          else acc.push({ name: curr.category, value: curr.co2e });
-          return acc;
-        },
-        [] as { name: string; value: number }[],
-      ),
+    () => computeCategoryBreakdown(activities),
     [activities],
   );
 

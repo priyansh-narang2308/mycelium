@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { ActivityLog } from "../../components/ActivityLog";
 
@@ -21,22 +20,42 @@ const mockStoreState = {
 };
 
 jest.mock("../../lib/stores/activity-store", () => {
-  const mockFn = jest.fn((selector) => selector(mockStoreState));
-  (mockFn as any).getState = jest.fn(() => mockStoreState);
-  return { useActivityStore: mockFn };
+  const { createMockStoreHook } = require("@/lib/test-utils/mock-stores");
+  return { useActivityStore: createMockStoreHook(() => mockStoreState) };
 });
 
 jest.mock("../../lib/stores/settings-store", () => {
-  const mockFn = jest.fn((selector) => selector(mockStoreState));
-  (mockFn as any).getState = jest.fn(() => mockStoreState);
-  return { useSettingsStore: mockFn };
+  const { createMockStoreHook } = require("@/lib/test-utils/mock-stores");
+  return { useSettingsStore: createMockStoreHook(() => mockStoreState) };
 });
 
 jest.mock("../../lib/stores/ai-store", () => {
-  const mockFn = jest.fn((selector) => selector(mockStoreState));
-  (mockFn as any).getState = jest.fn(() => mockStoreState);
-  return { useAIStore: mockFn };
+  const { createMockStoreHook } = require("@/lib/test-utils/mock-stores");
+  return { useAIStore: createMockStoreHook(() => mockStoreState) };
 });
+
+jest.mock("../../lib/hooks/useLogActivity", () => ({
+  useLogActivity: () => async (input: string) => {
+    const res = await fetch("/api/parse", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ input, region: mockStoreState.region }),
+    });
+    if (!res.ok) throw new Error("Failed to parse");
+    const parsed = await res.json();
+    mockStoreState.addActivity({
+      id: "test-id",
+      timestamp: new Date().toISOString(),
+      category: parsed.category,
+      subCategory: parsed.subCategory,
+      amount: parsed.amount,
+      unit: "km",
+      co2e: 1.7,
+      equivalent: "test",
+      rawInput: input,
+    });
+  },
+}));
 
 global.fetch = jest.fn();
 

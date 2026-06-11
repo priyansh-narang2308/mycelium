@@ -21,11 +21,9 @@ export default function SettingsPage(): JSX.Element {
     e.preventDefault();
     const budgetNum = parseFloat(budget);
     if (!isNaN(budgetNum) && budgetNum > 0) {
-      localStorage.setItem("CARBON_BUDGET", budget);
       setDailyBudget(budgetNum);
       recalculate(budgetNum);
     }
-    localStorage.setItem("CARBON_REGION", regionLocal);
     setRegion(regionLocal);
     toast.success("Settings saved successfully!");
   };

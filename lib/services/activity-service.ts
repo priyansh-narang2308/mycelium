@@ -1,34 +1,45 @@
 import type { Activity, Recommendation } from "@/lib/types";
 import { calculateActivityEmissions } from "@/lib/agents/calculator";
-import { useActivityStore } from "@/lib/stores/activity-store";
-import { useAIStore } from "@/lib/stores/ai-store";
-import { useSettingsStore } from "@/lib/stores/settings-store";
+import type { ParseResult } from "@/lib/agents/orchestrator";
 
-interface ParseResult {
-  category: string;
-  subCategory: string;
-  amount: number;
+export interface LogActivityDeps {
+  region: string;
+  dailyBudget: number;
+  activities: Activity[];
+  addActivity: (activity: Activity) => void;
+  setRecommendations: (recs: Recommendation[]) => void;
+  setInsight: (insight: string) => void;
 }
 
-export async function logActivity(input: string) {
-  const region = useSettingsStore.getState().region;
-  const dailyBudget = useSettingsStore.getState().dailyBudget;
-  const setRecommendations = useAIStore.getState().setRecommendations;
-  const setInsight = useAIStore.getState().setInsight;
-  const addActivity = useActivityStore.getState().addActivity;
-
-  const parsed = await parseActivity(input, region);
-  const activity = buildActivity(input, parsed, region);
-  
-  // Update state immediately
-  addActivity(activity);
-  
-  // Fetch AI feedback in the background
-  const updatedHistory = [...useActivityStore.getState().activities];
-  fetchAIFeedback(updatedHistory, region, dailyBudget, setRecommendations, setInsight);
+export interface AIFeedbackResult {
+  recommendationsUpdated: boolean;
+  insightUpdated: boolean;
+  error?: string;
 }
 
-export async function parseActivity(input: string, region: string): Promise<ParseResult> {
+export async function logActivityWithDeps(
+  input: string,
+  deps: LogActivityDeps,
+): Promise<void> {
+  const parsed = await parseActivity(input, deps.region);
+  const activity = buildActivity(input, parsed, deps.region);
+
+  deps.addActivity(activity);
+
+  const updatedHistory = [...deps.activities, activity];
+  void fetchAIFeedback(
+    updatedHistory,
+    deps.region,
+    deps.dailyBudget,
+    deps.setRecommendations,
+    deps.setInsight,
+  );
+}
+
+export async function parseActivity(
+  input: string,
+  region: string,
+): Promise<ParseResult> {
   const res = await fetch("/api/parse", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -41,9 +52,23 @@ export async function parseActivity(input: string, region: string): Promise<Pars
   return res.json();
 }
 
-export function buildActivity(rawInput: string, parsed: ParseResult, region: string): Activity {
-  const data = calculateActivityEmissions(parsed.category, parsed.subCategory, parsed.amount, rawInput, region);
-  return { id: Date.now().toString(), timestamp: new Date().toISOString(), ...data };
+export function buildActivity(
+  rawInput: string,
+  parsed: ParseResult,
+  region: string,
+): Activity {
+  const data = calculateActivityEmissions(
+    parsed.category ?? "transport",
+    parsed.subCategory ?? "car",
+    parsed.amount ?? 1,
+    rawInput,
+    region,
+  );
+  return {
+    id: crypto.randomUUID(),
+    timestamp: new Date().toISOString(),
+    ...data,
+  };
 }
 
 export async function fetchAIFeedback(
@@ -52,7 +77,7 @@ export async function fetchAIFeedback(
   budget: number,
   onRecommendations: (recs: Recommendation[]) => void,
   onInsight: (insight: string) => void,
-): Promise<void> {
+): Promise<AIFeedbackResult> {
   try {
     const [recRes, insRes] = await Promise.all([
       fetch("/api/recommend", {
@@ -66,14 +91,31 @@ export async function fetchAIFeedback(
         body: JSON.stringify({ history, budget, region }),
       }),
     ]);
+
+    let recommendationsUpdated = false;
+    let insightUpdated = false;
+
     if (recRes.ok) {
       const data = await recRes.json();
-      if (data.recommendations?.length) onRecommendations(data.recommendations);
+      if (data.recommendations?.length) {
+        onRecommendations(data.recommendations);
+        recommendationsUpdated = true;
+      }
     }
     if (insRes.ok) {
       const data = await insRes.json();
-      if (data.insight) onInsight(data.insight);
+      if (data.insight) {
+        onInsight(data.insight);
+        insightUpdated = true;
+      }
     }
-  } catch {
+
+    return { recommendationsUpdated, insightUpdated };
+  } catch (error) {
+    return {
+      recommendationsUpdated: false,
+      insightUpdated: false,
+      error: error instanceof Error ? error.message : "AI feedback request failed",
+    };
   }
 }

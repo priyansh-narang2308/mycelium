@@ -11,7 +11,6 @@ interface AIState {
   setInsight: (insight: string) => void;
   setIsProcessing: (status: boolean) => void;
   toggleChallenge: (id: string) => void;
-  resetChallenges: () => void;
 }
 
 const initialChallenges: Challenge[] = CHALLENGES.map((challenge) => ({
@@ -39,6 +38,4 @@ export const useAIStore = create<AIState>((set) => ({
           : challenge,
       ),
     })),
-
-  resetChallenges: () => set({ challenges: initialChallenges }),
 }));

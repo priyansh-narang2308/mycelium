@@ -1,6 +1,7 @@
 {
   "name": "carbonkeeper",
   "version": "1.0.0",
+  "description": "AI-powered personal carbon coach — PromptWars Challenge 3 submission",
   "private": true,
   "scripts": {
     "dev": "next dev",

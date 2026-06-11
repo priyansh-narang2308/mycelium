@@ -1,13 +1,10 @@
+import type { z } from "zod";
 import { getAIClient, generateContentSafe } from "@/lib/agents/client";
 import { getRegionLabel } from "@/lib/emissions";
 import { parseOutputSchema } from "@/lib/schemas/parse";
 import { buildParsePrompt } from "./prompts/parse.prompt";
 
-export interface ParseResult {
-  category?: string;
-  subCategory?: string;
-  amount?: number;
-}
+export type ParseResult = Partial<z.infer<typeof parseOutputSchema>>;
 
 export async function parseNaturalLanguage(
   input: string,

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { activityCategorySchema } from "./activity";
 
 export const parseInputSchema = z.object({
   input: z.string().min(1).max(500),
@@ -6,7 +7,7 @@ export const parseInputSchema = z.object({
 });
 
 export const parseOutputSchema = z.object({
-  category: z.enum(["transport", "food", "energy", "shopping"]),
+  category: activityCategorySchema,
   subCategory: z.string().min(1),
   amount: z.number().nonnegative(),
 });

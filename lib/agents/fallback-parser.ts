@@ -1,6 +1,12 @@
-const KEYWORD_MAP: [RegExp, string, string][] = [
+import type { z } from "zod";
+import type { parseOutputSchema } from "@/lib/schemas/parse";
+import type { ActivityCategory } from "@/lib/types";
+
+type ParseOutput = z.infer<typeof parseOutputSchema>;
+
+const KEYWORD_MAP: [RegExp, ActivityCategory, string][] = [
   [/drove|driving|drive|car/i, "transport", "car"],
-  [/flew|flight|flying|plane|flight/i, "transport", "flight"],
+  [/flew|flight|flying|plane/i, "transport", "flight"],
   [/bus|buss/i, "transport", "bus"],
   [/train|rail|subway|metro/i, "transport", "train"],
   [/bike|biking|bicycle|cycling|cycle/i, "transport", "bike"],
@@ -23,7 +29,7 @@ function extractAmount(input: string): number | null {
   return null;
 }
 
-export function parseFallback(input: string): { category: string; subCategory: string; amount: number } {
+export function parseFallback(input: string): ParseOutput {
   const amount = extractAmount(input) || 1;
 
   for (const [pattern, cat, sub] of KEYWORD_MAP) {

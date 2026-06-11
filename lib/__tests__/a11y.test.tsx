@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { render, act } from "@testing-library/react";
 import { axe } from "jest-axe";
 
@@ -61,21 +60,18 @@ const mockStoreState = {
 };
 
 jest.mock("../../lib/stores/activity-store", () => {
-  const mockFn = jest.fn((selector) => selector(mockStoreState));
-  (mockFn as any).getState = jest.fn(() => mockStoreState);
-  return { useActivityStore: mockFn };
+  const { createMockStoreHook } = require("@/lib/test-utils/mock-stores");
+  return { useActivityStore: createMockStoreHook(() => mockStoreState) };
 });
 
 jest.mock("../../lib/stores/settings-store", () => {
-  const mockFn = jest.fn((selector) => selector(mockStoreState));
-  (mockFn as any).getState = jest.fn(() => mockStoreState);
-  return { useSettingsStore: mockFn };
+  const { createMockStoreHook } = require("@/lib/test-utils/mock-stores");
+  return { useSettingsStore: createMockStoreHook(() => mockStoreState) };
 });
 
 jest.mock("../../lib/stores/ai-store", () => {
-  const mockFn = jest.fn((selector) => selector(mockStoreState));
-  (mockFn as any).getState = jest.fn(() => mockStoreState);
-  return { useAIStore: mockFn };
+  const { createMockStoreHook } = require("@/lib/test-utils/mock-stores");
+  return { useAIStore: createMockStoreHook(() => mockStoreState) };
 });
 
 jest.mock("next/font/google", () => ({

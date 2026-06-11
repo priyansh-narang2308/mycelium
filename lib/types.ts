@@ -1,22 +1,10 @@
-export interface Activity {
-  id: string;
-  timestamp: string;
-  category: string;
-  subCategory: string;
-  amount: number;
-  unit: string;
-  co2e: number;
-  equivalent: string;
-  rawInput?: string;
-}
+import type { z } from "zod";
+import type { activityCategorySchema, activitySchema } from "@/lib/schemas/activity";
+import type { recommendationSchema } from "@/lib/schemas/recommend";
 
-export interface Recommendation {
-  id: string;
-  title: string;
-  description: string;
-  potentialSavings: number; // in kg CO2e per year
-  difficulty: "Easy" | "Medium" | "Hard";
-}
+export type ActivityCategory = z.infer<typeof activityCategorySchema>;
+export type Activity = z.infer<typeof activitySchema>;
+export type Recommendation = z.infer<typeof recommendationSchema>;
 
 export interface Challenge {
   id: string;

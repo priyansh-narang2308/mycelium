@@ -12,10 +12,8 @@ const mockStore = {
 };
 
 jest.mock("../../lib/stores/settings-store", () => {
-  const mockFn = jest.fn((selector) => selector(mockStore));
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (mockFn as any).getState = jest.fn(() => mockStore);
-  return { useSettingsStore: mockFn };
+  const { createMockStoreHook } = require("@/lib/test-utils/mock-stores");
+  return { useSettingsStore: createMockStoreHook(() => mockStore) };
 });
 
 jest.mock("lucide-react", () => ({
@@ -60,14 +58,6 @@ describe("SettingsPage", () => {
     expect(screen.getByText("Save Settings")).toBeInTheDocument();
   });
 
-  it("saves budget to localStorage on submit", () => {
-    render(<SettingsPage />);
-    const budgetInput = screen.getByDisplayValue("10");
-    fireEvent.change(budgetInput, { target: { value: "15" } });
-    fireEvent.click(screen.getByText("Save Settings"));
-    expect(localStorageStore["CARBON_BUDGET"]).toBe("15");
-  });
-
   it("calls setDailyBudget on submit", () => {
     render(<SettingsPage />);
     const budgetInput = screen.getByDisplayValue("10");
@@ -94,14 +84,6 @@ describe("SettingsPage", () => {
   it("renders region selector", () => {
     render(<SettingsPage />);
     expect(screen.getByText("Region / Grid Context")).toBeInTheDocument();
-  });
-
-  it("saves region to localStorage on submit", () => {
-    render(<SettingsPage />);
-    const select = screen.getByRole("combobox");
-    fireEvent.change(select, { target: { value: "india" } });
-    fireEvent.click(screen.getByText("Save Settings"));
-    expect(localStorageStore["CARBON_REGION"]).toBe("india");
   });
 
   it("calls setRegion on submit", () => {

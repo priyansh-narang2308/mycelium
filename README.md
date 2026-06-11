@@ -64,10 +64,12 @@ User Input ("I drove 12km")
 - **AI Layer**: Google Gemini API (via `@google/genai` SDK) with keyword fallback when unavailable
 - **State**: Zustand
 - **Validation**: Zod
-- **Testing**: Jest + React Testing Library (143 tests)
+- **Testing**: Jest + React Testing Library (153 tests)
 - **Security**: Content-Security-Policy headers, rate limiting, server-side AI calls, Zod input validation on every endpoint
 
 ---
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development conventions and project structure.
 
 ## Getting Started
 
@@ -99,7 +101,7 @@ GEMINI_API_KEY="your-api-key-here"
 ```bash
 npm run dev       # Development server at http://localhost:3000
 npm run build     # Production build
-npm run test      # Test suite (143 tests)
+npm run test      # Test suite (153 tests)
 npm run lint      # ESLint check
 npm run typecheck # TypeScript type check
 ```

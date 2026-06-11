@@ -86,6 +86,21 @@ describe("useActivityStore", () => {
     expect(state.budgetUsed).toBe(0);
   });
 
+  it("persists activities to localStorage on add", () => {
+    const localStorageStore: Record<string, string> = {};
+    jest
+      .spyOn(Storage.prototype, "setItem")
+      .mockImplementation((key, value) => {
+        localStorageStore[key] = value;
+      });
+
+    const store = useActivityStore.getState();
+    const activity = makeActivity({ id: "persist-1", co2e: 2.1 });
+    store.addActivity(activity);
+
+    expect(localStorageStore.CARBON_ACTIVITIES).toContain("persist-1");
+  });
+
   it("sets recommendations", () => {
     const recommendation = { id: "r1", title: "Test", description: "Desc", potentialSavings: 100, difficulty: "Easy" as const };
     useAIStore.getState().setRecommendations([recommendation]);

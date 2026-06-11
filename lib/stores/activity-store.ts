@@ -1,7 +1,12 @@
 import { create } from "zustand";
 import type { Activity } from "@/lib/types";
 import { computeDailyFootprint, computeWeeklyTrend } from "@/lib/compute";
-import { getActivities, getBudget } from "@/lib/storage";
+import {
+  getActivities,
+  getBudget,
+  setActivities,
+  clearStoredActivities,
+} from "@/lib/storage";
 import { recalculateBudget } from "./budget-utils";
 
 interface ActivityState {
@@ -14,7 +19,6 @@ interface ActivityState {
   clearActivities: () => void;
   loadSampleData: () => Promise<void>;
   recalculate: (budget: number) => void;
-  setDailyBudget: (budget: number) => void;
 }
 
 const initialActivities = getActivities();
@@ -33,16 +37,15 @@ export const useActivityStore = create<ActivityState>((set) => ({
   addActivity: (activity) =>
     set((state) => {
       const newActivities = [...state.activities, activity];
-      const daily = computeDailyFootprint(newActivities);
+      setActivities(newActivities);
       return {
         activities: newActivities,
-        dailyFootprint: daily,
-        budgetUsed: Math.min((daily / state.dailyBudget) * 100, 100),
-        weeklyTrend: computeWeeklyTrend(newActivities),
+        ...recalculateBudget(newActivities, state.dailyBudget),
       };
     }),
 
   clearActivities: () => {
+    clearStoredActivities();
     set({
       activities: [],
       dailyFootprint: 0,
@@ -55,12 +58,10 @@ export const useActivityStore = create<ActivityState>((set) => ({
     try {
       const res = await fetch("/data/sample-activities.json");
       const data: Activity[] = await res.json();
-      const daily = computeDailyFootprint(data);
+      setActivities(data);
       set((state) => ({
         activities: data,
-        dailyFootprint: daily,
-        budgetUsed: Math.min((daily / state.dailyBudget) * 100, 100),
-        weeklyTrend: computeWeeklyTrend(data),
+        ...recalculateBudget(data, state.dailyBudget),
       }));
     } catch {
       // Error handling without toast (toast moved to component)
@@ -68,14 +69,8 @@ export const useActivityStore = create<ActivityState>((set) => ({
   },
 
   recalculate: (budget: number) =>
-    set((state) => {
-      const result = recalculateBudget(state.activities, budget);
-      return { ...result, dailyBudget: budget };
-    }),
-
-  setDailyBudget: (budget: number) =>
-    set((state) => {
-      const result = recalculateBudget(state.activities, budget);
-      return { ...result, dailyBudget: budget };
-    }),
+    set((state) => ({
+      ...recalculateBudget(state.activities, budget),
+      dailyBudget: budget,
+    })),
 }));

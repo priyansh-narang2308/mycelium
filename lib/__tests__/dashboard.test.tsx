@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import Dashboard from "../../app/dashboard/page";
 import { Activity, Recommendation, Challenge } from "../../lib/types";
@@ -58,7 +57,7 @@ const baseState: MockState = {
   toggleChallenge: mockToggleChallenge,
 };
 
-const stateWithActivities = {
+const stateWithActivities: MockState = {
   ...baseState,
   activities: [
     {
@@ -81,21 +80,18 @@ const stateWithActivities = {
 let mockStoreState = baseState;
 
 jest.mock("../../lib/stores/activity-store", () => {
-  const mockFn = jest.fn((selector) => selector(mockStoreState));
-  (mockFn as any).getState = jest.fn(() => mockStoreState);
-  return { useActivityStore: mockFn };
+  const { createMockStoreHook } = require("@/lib/test-utils/mock-stores");
+  return { useActivityStore: createMockStoreHook(() => mockStoreState) };
 });
 
 jest.mock("../../lib/stores/settings-store", () => {
-  const mockFn = jest.fn((selector) => selector(mockStoreState));
-  (mockFn as any).getState = jest.fn(() => mockStoreState);
-  return { useSettingsStore: mockFn };
+  const { createMockStoreHook } = require("@/lib/test-utils/mock-stores");
+  return { useSettingsStore: createMockStoreHook(() => mockStoreState) };
 });
 
 jest.mock("../../lib/stores/ai-store", () => {
-  const mockFn = jest.fn((selector) => selector(mockStoreState));
-  (mockFn as any).getState = jest.fn(() => mockStoreState);
-  return { useAIStore: mockFn };
+  const { createMockStoreHook } = require("@/lib/test-utils/mock-stores");
+  return { useAIStore: createMockStoreHook(() => mockStoreState) };
 });
 
 jest.mock("next/dynamic", () => {
