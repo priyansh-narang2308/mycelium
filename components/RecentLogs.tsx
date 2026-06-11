@@ -2,7 +2,6 @@
 
 import { Map } from "lucide-react";
 import { motion } from "framer-motion";
-import type { Activity } from "@/lib/types";
 
 import { useActivityStore } from "@/lib/stores/activity-store";
 

@@ -13,5 +13,12 @@ export const POST = createAIRoute<
   cacheKeyFn: (input) => ({ input: input.input, region: input.region }),
   handler: async (input) => parseNaturalLanguage(input.input, input.region),
   fallbackHandler: (input) => parseFallback(input.input),
-  responseFn: (category) => category as Record<string, unknown>,
+  responseFn: (res) => {
+    if (!res) return {};
+    return {
+      category: res.category,
+      subCategory: res.subCategory,
+      amount: res.amount,
+    };
+  },
 });

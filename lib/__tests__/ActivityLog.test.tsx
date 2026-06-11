@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { ActivityLog } from "../../components/ActivityLog";
 
@@ -19,16 +20,23 @@ const mockStoreState = {
   dailyBudget: 10,
 };
 
-jest.mock("../../lib/store", () => ({
-  useActivities: () => mockStoreState.activities,
-  useAddActivity: () => mockStoreState.addActivity,
-  useSetRecommendations: () => mockStoreState.setRecommendations,
-  useSetInsight: () => mockStoreState.setInsight,
-  useSetIsProcessing: () => mockStoreState.setIsProcessing,
-  useIsProcessing: () => mockStoreState.isProcessing,
-  useRegion: () => mockStoreState.region,
-  useDailyBudget: () => mockStoreState.dailyBudget,
-}));
+jest.mock("../../lib/stores/activity-store", () => {
+  const mockFn = jest.fn((selector) => selector(mockStoreState));
+  (mockFn as any).getState = jest.fn(() => mockStoreState);
+  return { useActivityStore: mockFn };
+});
+
+jest.mock("../../lib/stores/settings-store", () => {
+  const mockFn = jest.fn((selector) => selector(mockStoreState));
+  (mockFn as any).getState = jest.fn(() => mockStoreState);
+  return { useSettingsStore: mockFn };
+});
+
+jest.mock("../../lib/stores/ai-store", () => {
+  const mockFn = jest.fn((selector) => selector(mockStoreState));
+  (mockFn as any).getState = jest.fn(() => mockStoreState);
+  return { useAIStore: mockFn };
+});
 
 global.fetch = jest.fn();
 

@@ -1,6 +1,5 @@
 "use client";
 import { motion } from "framer-motion";
-import type { Recommendation } from "@/lib/types";
 
 import { useAIStore } from "@/lib/stores/ai-store";
 

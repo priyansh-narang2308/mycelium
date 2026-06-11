@@ -1,7 +1,6 @@
 "use client";
 import { useMemo } from "react";
 import { Leaf, TrendingDown } from "lucide-react";
-import type { Activity } from "@/lib/types";
 import { CategoryChart } from "@/components/charts/CategoryChart";
 
 import { useActivityStore } from "@/lib/stores/activity-store";

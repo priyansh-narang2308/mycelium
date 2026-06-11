@@ -1,4 +1,6 @@
-import { useActivityStore, useSettingsStore, useAIStore } from "../stores";
+import { useActivityStore } from "../stores/activity-store";
+import { useSettingsStore } from "../stores/settings-store";
+import { useAIStore } from "../stores/ai-store";
 import { Activity } from "../types";
 
 function makeActivity(overrides: Partial<Activity> = {}): Activity {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { render, screen } from "@testing-library/react";
 import InsightsPage from "../../app/dashboard/insights/page";
 import { Activity, Recommendation, Challenge } from "../../lib/types";
@@ -34,26 +35,23 @@ const baseState: MockState = {
 
 let mockStoreState = baseState;
 
-jest.mock("../../lib/store", () => ({
-  useStore: jest.fn(() => mockStoreState),
-  useActivities: () => mockStoreState.activities,
-  useDailyFootprint: () => mockStoreState.dailyFootprint,
-  useBudgetUsed: () => mockStoreState.budgetUsed,
-  useDailyBudget: () => mockStoreState.dailyBudget,
-  useWeeklyTrend: () => mockStoreState.weeklyTrend,
-  useRecommendations: () => mockStoreState.recommendations,
-  useChallenges: () => mockStoreState.challenges,
-  useInsight: () => mockStoreState.insight,
-  useLoadSampleData: () => mockStoreState.loadSampleData,
-  useToggleChallenge: () => mockStoreState.toggleChallenge,
-  useAddActivity: () => mockStoreState.addActivity,
-  useSetRecommendations: () => mockStoreState.setRecommendations,
-  useSetInsight: () => mockStoreState.setInsight,
-  useSetIsProcessing: () => mockStoreState.setIsProcessing,
-  useIsProcessing: () => mockStoreState.isProcessing,
-  useRegion: () => mockStoreState.region,
-  useClearActivities: () => mockStoreState.clearActivities,
-}));
+jest.mock("../../lib/stores/activity-store", () => {
+  const mockFn = jest.fn((selector) => selector(mockStoreState));
+  (mockFn as any).getState = jest.fn(() => mockStoreState);
+  return { useActivityStore: mockFn };
+});
+
+jest.mock("../../lib/stores/settings-store", () => {
+  const mockFn = jest.fn((selector) => selector(mockStoreState));
+  (mockFn as any).getState = jest.fn(() => mockStoreState);
+  return { useSettingsStore: mockFn };
+});
+
+jest.mock("../../lib/stores/ai-store", () => {
+  const mockFn = jest.fn((selector) => selector(mockStoreState));
+  (mockFn as any).getState = jest.fn(() => mockStoreState);
+  return { useAIStore: mockFn };
+});
 
 jest.mock("framer-motion", () => ({
   motion: {

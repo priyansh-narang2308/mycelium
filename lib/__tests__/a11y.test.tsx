@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { render, act } from "@testing-library/react";
 import { axe } from "jest-axe";
 
@@ -59,30 +60,23 @@ const mockStoreState = {
   clearActivities: jest.fn(),
 };
 
-jest.mock("../../lib/store", () => ({
-  useStore: jest.fn((selector?: (s: typeof mockStoreState) => unknown) => {
-    return selector ? selector(mockStoreState) : mockStoreState;
-  }),
-  useDailyBudget: () => mockStoreState.dailyBudget,
-  useRegion: () => mockStoreState.region,
-  useSetDailyBudget: () => mockStoreState.setDailyBudget,
-  useSetRegion: () => mockStoreState.setRegion,
-  useActivities: () => mockStoreState.activities,
-  useDailyFootprint: () => mockStoreState.dailyFootprint,
-  useBudgetUsed: () => mockStoreState.budgetUsed,
-  useWeeklyTrend: () => mockStoreState.weeklyTrend,
-  useRecommendations: () => mockStoreState.recommendations,
-  useChallenges: () => mockStoreState.challenges,
-  useInsight: () => mockStoreState.insight,
-  useIsProcessing: () => mockStoreState.isProcessing,
-  useAddActivity: () => mockStoreState.addActivity,
-  useSetRecommendations: () => mockStoreState.setRecommendations,
-  useSetInsight: () => mockStoreState.setInsight,
-  useSetIsProcessing: () => mockStoreState.setIsProcessing,
-  useToggleChallenge: () => mockStoreState.toggleChallenge,
-  useLoadSampleData: () => mockStoreState.loadSampleData,
-  useClearActivities: () => mockStoreState.clearActivities,
-}));
+jest.mock("../../lib/stores/activity-store", () => {
+  const mockFn = jest.fn((selector) => selector(mockStoreState));
+  (mockFn as any).getState = jest.fn(() => mockStoreState);
+  return { useActivityStore: mockFn };
+});
+
+jest.mock("../../lib/stores/settings-store", () => {
+  const mockFn = jest.fn((selector) => selector(mockStoreState));
+  (mockFn as any).getState = jest.fn(() => mockStoreState);
+  return { useSettingsStore: mockFn };
+});
+
+jest.mock("../../lib/stores/ai-store", () => {
+  const mockFn = jest.fn((selector) => selector(mockStoreState));
+  (mockFn as any).getState = jest.fn(() => mockStoreState);
+  return { useAIStore: mockFn };
+});
 
 jest.mock("next/font/google", () => ({
   Inter: () => ({ className: "inter" }),

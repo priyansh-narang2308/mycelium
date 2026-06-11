@@ -11,12 +11,12 @@ const mockStore = {
   setRegion: mockSetRegion,
 };
 
-jest.mock("../../lib/store", () => ({
-  useDailyBudget: () => mockStore.dailyBudget,
-  useRegion: () => mockStore.region,
-  useSetDailyBudget: () => mockSetDailyBudget,
-  useSetRegion: () => mockSetRegion,
-}));
+jest.mock("../../lib/stores/settings-store", () => {
+  const mockFn = jest.fn((selector) => selector(mockStore));
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (mockFn as any).getState = jest.fn(() => mockStore);
+  return { useSettingsStore: mockFn };
+});
 
 jest.mock("lucide-react", () => ({
   Settings2: () => <span>Settings2</span>,
